@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PayMaster Employee</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Employee.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container-fluid nav-inner d-flex align-items-center">
+                <div class="d-flex align-items-center">
+                    <!-- Sidebar toggle -->
+                    <button id="sidebarToggle" class="btn btn-ghost me-2" aria-expanded="true" aria-controls="employeeSidebar" title="Toggle menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="brand">PayMaster</div>
+                </div>
+
+                <div class="nav-actions d-flex align-items-center">
+                    <div class="me-3 d-none d-md-block">
+                        <span class="small text-muted">Employee Portal</span>
+                    </div>
+                    <partial name="_LoginStatus" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="shell">
+        <aside id="employeeSidebar" class="sidebar" role="navigation" aria-label="Employee menu">
+            @* Sidebar content separated into a partial for easier editing *@
+            <partial name="_EmployeeSummary" />
+        </aside>
+
+        <main class="content">
+            <div class="container-fluid content-inner">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <partial name="_AttendanceCalendar" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <partial name="_PayrollList" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <partial name="_Deductions" />
+                    </div>
+
+                    <div class="col-12">
+                        <partial name="_EmployeeActions" />
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <footer class="footer">
+    @RenderBody()
+        <div class="container-fluid text-center text-muted small py-3">
+            &copy; 2025 - PayMasterMVP
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/employee-layout.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

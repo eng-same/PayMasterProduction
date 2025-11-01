@@ -1,0 +1,30 @@
+﻿@* Sidebar for Supervisor, responsive & toggle-ready *@
+<div class="supervisor-sidebar-inner">
+    <h5 class="sidebar-brand mb-4">Supervisor Menu</h5>
+    <ul class="nav flex-column sidebar-nav">
+        <li class="nav-item mb-2">
+            <a class="nav-link active" asp-area="Supervisor" asp-controller="Home" asp-action="Dashboard">
+                <i class="bi bi-speedometer2 me-2"></i>
+                <span class="link-text">Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a class="nav-link" asp-area="Supervisor" asp-controller="Employee" asp-action="Index">
+                <i class="bi bi-people me-2"></i>
+                <span class="link-text">Employees</span>
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a class="nav-link" asp-area="Supervisor" asp-controller="Reports" asp-action="Index">
+                <i class="bi bi-file-earmark-bar-graph me-2"></i>
+                <span class="link-text">Reports</span>
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a class="nav-link" asp-area="Supervisor" asp-controller="Payroll" asp-action="Index">
+                <i class="bi bi-currency-dollar me-2"></i>
+                <span class="link-text">Payroll</span>
+            </a>
+        </li>
+    </ul>
+</div>

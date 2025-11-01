@@ -1,0 +1,52 @@
+﻿@model LoginVM
+@{
+    Layout = "_LoginLayout";
+}
+
+<section class="page-inner">
+    <div class="login-grid">
+        <!-- Welcome Text -->
+        <div class="welcome-panel">
+            <h1>Welcome back to <span class="accent">PayMaster</span></h1>
+            <p class="lead" style="color: hsl(218, 81%, 85%);">
+                Sign in to access your PayMaster dashboard — manage payments, view transaction history,
+                and keep your account secure. Fast, reliable, and ready for merchants and users.
+            </p>
+        </div>
+
+        <!-- Form Column -->
+        <div class="form-column">
+            <div class="radius-shape one" aria-hidden="true"></div>
+            <div class="radius-shape two" aria-hidden="true"></div>
+
+            <div class="card bg-glass" style="width:100%; max-width:520px;">
+                <div class="card-body">
+                    <form asp-action="Login" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="mb-3">
+                            <input type="email" asp-for="Email" class="form-control" placeholder="Email address" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="password" asp-for="Password" class="form-control" placeholder="Password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" asp-for="RememberMe" type="checkbox" value="true" />
+                            <label class="form-check-label" asp-for="RememberMe">Remember Me</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-2">Sign In</button>
+
+                        <div class="text-center mt-2">
+                            Don’t have an account? <a asp-action="Register" class="fw-bold">Create one</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

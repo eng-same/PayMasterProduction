@@ -1,0 +1,14 @@
+﻿
+@model CompanyDeskVM
+@{
+    ViewData["Title"] = "Company Desk";
+}
+
+<div class="container py-4">
+    <h2>@Model.CompanyName - Company Desk</h2>
+
+    <div class="mt-4">
+        <a class="btn btn-success btn-lg me-2" asp-action="CheckIn">Check In</a>
+        <a class="btn btn-danger btn-lg" asp-action="CheckOut">Check Out</a>
+    </div>
+</div>

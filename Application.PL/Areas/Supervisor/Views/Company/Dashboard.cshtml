@@ -1,0 +1,180 @@
+﻿@model CompanyDashboardVM
+@{
+    ViewData["Title"] = "Company Dashboard";
+}
+<div class="container-fluid py-4">
+    <h2>@Model.CompanyName - Dashboard</h2>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card"><div class="card-body">
+                <h6>Total Employees</h6>
+                <h3>@Model.TotalEmployees</h3>
+            </div></div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card"><div class="card-body">
+                <h6>Unpaid Invoices</h6>
+                <h3>@Model.TotalUnpaidAmount.ToString("C")</h3>
+            </div></div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card"><div class="card-body">
+                <h6>Absentees This Month</h6>
+                <p>@Model.AbsentEmployees.Count() employee(s) with zero check-ins this month.</p>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card"><div class="card-body">
+                <h5>Monthly Attendance (last @Model.MonthlyAttendance.Count months)</h5>
+                <canvas id="attendanceChart" height="120"></canvas>
+            </div></div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3"><div class="card-body">
+                <h6>Recent Unpaid Invoices</h6>
+                <form id="antiforgeryForm">@Html.AntiForgeryToken()</form>
+                <ul class="list-group">
+                    @if (Model.RecentUnpaidInvoices != null && Model.RecentUnpaidInvoices.Any())
+                    {
+                        foreach (var inv in Model.RecentUnpaidInvoices)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@inv.Date.ToString("yyyy-MM-dd")</strong>
+                                    <div><small>@inv.Notes</small></div>
+                                </div>
+                                <div>
+                                    <span class="me-2">@inv.Amount.ToString("C")</span>
+                                    <button class="btn btn-sm btn-primary pay-btn" data-invoice="@inv.InvoiceId">Pay</button>
+                                </div>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item">No unpaid invoices. Well done!</li>
+                    }
+                </ul>
+            </div></div>
+
+            <div class="card"><div class="card-body">
+                <h6>Add Employee (existing user)</h6>
+                <form id="addExistingForm">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-2"><input class="form-control" name="userEmail" placeholder="User email" required /></div>
+                    <div class="mb-2"><input class="form-control" name="position" placeholder="Position" /></div>
+                    <button type="submit" class="btn btn-sm btn-success">Add</button>
+                </form>
+                <small class="text-muted d-block mt-2">If user does not exist, use the admin console or create new user via the create endpoint.</small>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card"><div class="card-body">
+                <h6>Employee Reports</h6>
+                <table class="table table-sm">
+                    <thead>
+                        <tr><th>Employee</th><th>Salaries</th><th>Overtime</th><th>Deductions</th><th>Check-ins (month)</th></tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EmployeeReports != null && Model.EmployeeReports.Any())
+                        {
+                            foreach (var e in Model.EmployeeReports)
+                            {
+                                <tr class="@(e.AttendanceCountThisMonth == 0 ? "table-warning" : "")">
+                                    <td>@e.FullName</td>
+                                    <td>@e.TotalSalaries.ToString("C")</td>
+                                    <td>@e.TotalOvertimes.ToString("C")</td>
+                                    <td>@e.TotalDeductions.ToString("C")</td>
+                                    <td>@e.AttendanceCountThisMonth</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="5">No employees found.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // helper: read antiforgery token rendered on page
+    function getAntiForgeryToken() {
+        const input = document.querySelector('input[name="__RequestVerificationToken"]');
+        return input ? input.value : '';
+    }
+
+    (function () {
+        var labels = @Html.Raw(JsonSerializer.Serialize(Model.MonthlyAttendance.Select(m => m.Label)));
+        var data = @Html.Raw(JsonSerializer.Serialize(Model.MonthlyAttendance.Select(m => m.Paid))); // Paid used as count
+
+        var ctx = document.getElementById('attendanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: [{ label: 'Check-ins', data: data, borderWidth: 1 }] },
+            options: { responsive: true }
+        });
+    })();
+
+    // wire pay buttons
+    document.addEventListener('click', async function (ev) {
+        var btn = ev.target.closest && ev.target.closest('.pay-btn');
+        if (!btn) return;
+        ev.preventDefault();
+        if (!confirm('Mark invoice as paid?')) return;
+        const invoiceId = btn.getAttribute('data-invoice');
+        const token = getAntiForgeryToken();
+        try {
+            const res = await fetch('@Url.Action("PayInvoice", "Company", new { area = "Company" })', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ __RequestVerificationToken: token, id: invoiceId })
+            });
+            if (!res.ok) { alert('Failed to pay invoice'); return; }
+            alert('Invoice marked paid');
+            location.reload();
+        } catch (err) {
+            console.error(err); alert('Network error');
+        }
+    });
+
+    // add existing user form submit
+    document.getElementById('addExistingForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const form = e.target;
+        const token = getAntiForgeryToken();
+        const data = new URLSearchParams(new FormData(form));
+        data.append('__RequestVerificationToken', token);
+
+        try {
+            const res = await fetch('@Url.Action("AddExistingUserAsEmployee", "Company", new { area = "Company" })', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: data
+            });
+            if (!res.ok) {
+                const text = await res.text();
+                alert('Add failed: ' + text);
+                return;
+            }
+            alert('Employee added');
+            location.reload();
+        } catch (err) {
+            console.error(err); alert('Network error');
+        }
+    });
+</script>

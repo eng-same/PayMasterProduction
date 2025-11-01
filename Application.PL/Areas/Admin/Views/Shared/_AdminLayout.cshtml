@@ -1,0 +1,72 @@
+﻿@* _AdminLayout.cshtml *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SplendoreMVP Admin</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Fixed glass navbar -->
+    <nav class="navbar">
+        <div class="container-fluid nav-inner">
+            <a class="brand" asp-area="Admin" asp-action="Dashboard" asp-controller="Admin">Splendore Admin</a>
+
+            <div class="right-controls d-flex align-items-center">
+                <div class="d-none d-md-block me-3">
+                    <span class="small text-muted">Admin Panel</span>
+                </div>
+                <div>
+                    <partial name="_LoginStatus" />
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="shell">
+        <!-- Sidebar (fixed on desktop, stacked on small screens) -->
+        <aside class="sidebar">
+            <h5 class="sidebar-title">Admin Menu</h5>
+            <ul class="nav flex-column sidebar-nav">
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")"
+                       asp-area="Admin"
+                       asp-action="Dashboard"
+                       asp-controller="Admin">
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-action="Index" asp-controller="Product">Finance</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-action="Index" asp-controller="Category">Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-action="Index" asp-controller="CompanyAdmin">Companies</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main content -->
+        <main class="content">
+            <div class="content-inner container-fluid">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid text-center text-muted small py-3">
+            &copy; 2025 <span class="fw-bold">Paymaster</span> | Admin Dashboard
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

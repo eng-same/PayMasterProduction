@@ -1,0 +1,39 @@
+﻿@* Views/Shared/_LoginLayout.cshtml *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PayMaster</title>
+
+    <!-- Keep only the assets needed for the login pages to avoid conflicts -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+<body class="login-page">
+    <header>
+        <nav class="login-navbar" role="navigation" aria-label="Login navigation">
+            <div class="nav-inner">
+                <div class="brand">PayMaster</div>
+                <div class="nav-links">
+                    <a asp-action="Index" class="nav-link">Home</a>
+                    <a asp-action="About" class="nav-link">About</a>
+                    <a asp-action="Contact" class="nav-link">Contact</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="login-root" role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="login-footer" aria-hidden="true">
+        &copy; @DateTime.Now.Year — PayMaster
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

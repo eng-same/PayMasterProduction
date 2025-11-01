@@ -1,0 +1,14 @@
+﻿@model CompanyListItemVM
+<div class="card mb-3">
+    <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="card-title">@Model.Name</h5>
+            <div class="small">Employees: @Model.ActiveEmployeeCount</div>
+            <div class="small">Rate: @(Model.BillingRatePerEmployee?.ToString("C") ?? "—")</div>
+        </div>
+        <div>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">Details</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+﻿@model CompanyEditVM
+@{
+    ViewData["Title"] = "Create Company";
+}
+
+
+<h1>Create Company</h1>
+
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="Address" class="form-label"></label>
+        <input asp-for="Address" class="form-control" />
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="DefaultGraceMinutes" class="form-label">Default Grace Minutes</label>
+            <input asp-for="DefaultGraceMinutes" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Timezone" class="form-label"></label>
+            <input asp-for="Timezone" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="BillingRatePerEmployee" class="form-label">Billing rate per employee</label>
+            <input asp-for="BillingRatePerEmployee" class="form-control" />
+        </div>
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Supervisors</label>
+        <select asp-for="SelectedSupervisorIds" asp-items="Model.AvailableSupervisors" class="form-control" multiple></select>
+        <div class="form-text">Select users to assign as supervisors (optional).</div>
+    </div>
+
+
+    <div class="form-check mb-3">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label">Active</label>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

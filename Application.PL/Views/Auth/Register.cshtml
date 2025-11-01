@@ -1,0 +1,74 @@
+﻿@model UserRegesterVM
+@{
+    Layout = "_LoginLayout";
+}
+
+<section class="page-inner">
+    <div class="login-grid">
+        <!-- Welcome Text -->
+        <div class="welcome-panel">
+            <h1>Join <span class="accent">PayMaster</span></h1>
+            <p class="lead" style="color: hsl(218, 81%, 85%);">
+                Create your free PayMaster account to accept payments, manage payouts, and access powerful reporting tools.
+                Quick setup and secure transactions so your business can grow.
+            </p>
+        </div>
+
+        <!-- Form Column -->
+        <div class="form-column">
+            <div class="radius-shape one" aria-hidden="true"></div>
+            <div class="radius-shape two" aria-hidden="true"></div>
+
+            <div class="card bg-glass" style="width:100%; max-width:520px;">
+                <div class="card-body">
+                    <form asp-action="Register" method="post" enctype="multipart/form-data" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col">
+                                <input type="text" asp-for="FirstName" class="form-control" placeholder="First name" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col">
+                                <input type="text" asp-for="LastName" class="form-control" placeholder="Last name" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="email" asp-for="Email" class="form-control" placeholder="Email address" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="password" asp-for="Password" class="form-control" placeholder="Password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="Confirm password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Profile picture</label>
+                            <input type="file" class="form-control" asp-for="ProfilePic" />
+                            <span asp-validation-for="ProfilePic" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" asp-for="RememberMe" type="checkbox" value="true" />
+                            <label class="form-check-label" asp-for="RememberMe">Remember Me</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-2">Create Account</button>
+
+                        <div class="text-center mt-2">
+                            Already have an account? <a asp-action="Login" class="fw-bold">Sign in</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

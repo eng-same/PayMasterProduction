@@ -1,0 +1,235 @@
+﻿@model VisitorRequestViewModel
+@{
+    ViewData["Title"] = "Request Website for Your Company";
+}
+
+
+<!-- Improved, accessible, and modernized form UI using Bootstrap 5 -->
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="mb-0">@ViewData["Title"]</h3>
+                        <div class="small text-muted">Fill in company details — a supervisor account will be created after admin approval.</div>
+                    </div>
+                    <div class="ms-3 text-end">
+                        <!-- optional logo slot -->
+                        <img src="/images/logo-placeholder.png" alt="logo" style="height:36px;opacity:.9" />
+                    </div>
+                </div>
+
+
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success d-flex align-items-center" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <div>@TempData["Success"]</div>
+                        </div>
+                    }
+                    <form asp-action="Request" method="post" class="needs-validation" novalidate autocomplete="off">
+
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label asp-for="CompanyName" class="form-label">Company name</label>
+                                <input asp-for="CompanyName" class="form-control form-control-lg" placeholder="Acme, Inc." required />
+                                <div class="invalid-feedback">Please enter your company name.</div>
+                                <span asp-validation-for="CompanyName" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label asp-for="ContactName" class="form-label">Contact name</label>
+                                <input asp-for="ContactName" class="form-control" placeholder="Jane Doe" required />
+                                <div class="invalid-feedback">Who should we contact?</div>
+                                <span asp-validation-for="ContactName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label">Email</label>
+                                <input asp-for="Email" class="form-control" placeholder="name@company.com" type="email" required />
+                                <div class="invalid-feedback">Enter a valid email address.</div>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label">Phone (optional)</label>
+                                <input asp-for="Phone" class="form-control" placeholder="+1 555 123 4567" inputmode="tel" />
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Employees</label>
+                                <div class="d-flex align-items-center gap-3">
+                                    <input type="range" class="form-range flex-grow-1" min="1" max="500" step="1" id="employeeCount" name="NumberOfEmployees" value="@Model.NumberOfEmployees" />
+                                    <div class="text-end" style="min-width:90px;">
+                                        <div class="small text-muted">Count</div>
+                                        <div id="employeeCountLabel" class="fw-bold">@Model.NumberOfEmployees</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center mt-2">
+                                    <div id="emoji" style="font-size:30px; margin-right:10px;">🙂</div>
+                                    <div>
+                                        <div class="small text-muted">Estimated rate per employee</div>
+                                        <div id="ratePerEmployee" class="h5 mb-0">$15.00</div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-12">
+                                <label asp-for="Message" class="form-label">Tell us about your needs</label>
+<textarea asp-for="Message" class="form-control" rows="4" placeholder="Short note about what you'd like from the website"></textarea>
+                                <span asp-validation-for="Message" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-8">
+                                <label asp-for="Password" class="form-label">Supervisor password</label>
+                                <div class="input-group">
+                                    <input asp-for="Password" class="form-control" id="passwordInput" aria-describedby="pwdHelp" autocomplete="new-password" required />
+                                    <button type="button" class="btn btn-outline-secondary" id="togglePassword" title="Show / hide password">Show</button>
+                                </div>
+                                <div id="pwdHelp" class="form-text">Choose a secure password. You'll use this to sign in after approval.</div>
+                                <div class="progress mt-2" style="height:8px; display:none;" id="pwdStrengthBar">
+                                    <div class="progress-bar" role="progressbar" style="width:0%" id="pwdStrengthFill"></div>
+                                </div>
+                                <div class="small mt-1 text-muted" id="pwdStrengthText"></div>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="col-md-4 d-flex align-items-end justify-content-end gap-2">
+                                <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="submitSpinner"></span>
+                                    <span id="submitText">Submit Request</span>
+                                </button>
+                            </div>
+
+
+                        </div>
+
+
+                    </form>
+
+
+                    <div class="text-center text-muted mt-3 small">We review requests within <strong>48 hours</strong>.</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+const slider = document.getElementById('employeeCount');
+const label = document.getElementById('employeeCountLabel');
+const emoji = document.getElementById('emoji');
+const rateEl = document.getElementById('ratePerEmployee');
+
+
+function computeRate(n) {
+// nicer stepped pricing
+if (n <= 25) return 20;
+if (n <= 100) return 12.5;
+if (n <= 250) return 8.5;
+return 6.5;
+}
+
+
+function updateUI() {
+const n = parseInt(slider.value || '1');
+label.innerText = n.toLocaleString();
+const rate = computeRate(n);
+rateEl.innerText = `$${rate.toFixed(2)}`;
+
+
+let e = '🙂';
+if (n > 25 && n <= 100) e = '😃';
+else if (n > 100 && n <= 250) e = '😄';
+else if (n > 250) e = '🤩';
+emoji.innerText = e;
+}
+        slider && slider.addEventListener('input', updateUI);
+        updateUI();
+
+
+        // password show/hide + strength
+        const pwdInput = document.getElementById('passwordInput');
+        const togglePwd = document.getElementById('togglePassword');
+        const strengthBar = document.getElementById('pwdStrengthBar');
+        const strengthFill = document.getElementById('pwdStrengthFill');
+        const strengthText = document.getElementById('pwdStrengthText');
+
+
+        function scorePassword(pwd) {
+        let score = 0;
+        if (!pwd) return 0;
+        if (pwd.length >= 8) score += 1;
+        if (/[A-Z]/.test(pwd)) score += 1;
+        if (/[0-9]/.test(pwd)) score += 1;
+        if (/[^A-Za-z0-9]/.test(pwd)) score += 1;
+        if (pwd.length >= 12) score += 1;
+        return score; // 0-5
+        }
+
+
+        function updateStrength() {
+        const s = scorePassword(pwdInput.value);
+        const pct = (s / 5) * 100;
+        strengthBar.style.display = pwdInput.value ? 'block' : 'none';
+        strengthFill.style.width = pct + '%';
+        let txt = '';
+        if (s <= 1) txt = 'Very weak';
+        else if (s === 2) txt = 'Weak';
+        else if (s === 3) txt = 'Fair';
+        else if (s === 4) txt = 'Good';
+        else txt = 'Strong';
+        strengthText.innerText = pwdInput.value ? txt : '';
+        }
+                togglePwd && togglePwd.addEventListener('click', function () {
+        if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        togglePwd.innerText = 'Hide';
+        } else {
+        pwdInput.type = 'password';
+        togglePwd.innerText = 'Show';
+        }
+        });
+
+
+        pwdInput && pwdInput.addEventListener('input', updateStrength);
+        updateStrength();
+
+
+        // bootstrap custom validation + disable double submit
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+        }
+
+
+        // disable submit to prevent double-post
+        const submitBtn = document.getElementById('submitBtn');
+        const spinner = document.getElementById('submitSpinner');
+        submitBtn.setAttribute('disabled', '');
+        spinner.classList.remove('d-none');
+        document.getElementById('submitText').innerText = 'Submitting...';
+        }, false);
+        });
+
+
+        })();
+    </script>
+}

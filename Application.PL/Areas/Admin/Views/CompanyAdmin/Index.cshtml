@@ -1,0 +1,44 @@
+﻿@model IEnumerable<CompanyListItemVM>
+@{
+
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Companies";
+}
+
+
+<h1>Companies</h1>
+
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create Company</a>
+</p>
+
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Active Employees</th>
+            <th>Rate / Employee</th>
+            <th>Current Monthly</th>
+            <th>Active</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m => c.Name)</td>
+                <td>@c.ActiveEmployeeCount</td>
+                <td>@(c.BillingRatePerEmployee.HasValue? c.BillingRatePerEmployee.Value.ToString("C") : "—")</td>
+                <td>@c.CurrentMonthlyAmount.ToString("C")</td>
+                <td>@(c.IsActive ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-secondary">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

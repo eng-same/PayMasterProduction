@@ -1,0 +1,1017 @@
+/* Site.css — common styles, variables, resets
+   Load this first on every page. Role-specific files override variables and rules below.
+*/
+
+/* ---------------- Variables ---------------- */
+:root {
+    /* Colors */
+    --brand-color: #d4af37;
+    --brand-color-2: #c79f2e;
+    --text-light: #f0e6b8;
+    --white: #fff;
+    /* Background gradient */
+    --bg-grad-start: #2c3e50;
+    --bg-grad-mid-1: #34495e;
+    --bg-grad-mid-2: #5a6d5a;
+    --bg-grad-mid-3: #8b9b6b;
+    --bg-grad-end: #b8b577;
+    --bg-gradient: linear-gradient(180deg, var(--bg-grad-start) 0%, var(--bg-grad-mid-1) 40%, var(--bg-grad-mid-2) 70%, var(--bg-grad-mid-3) 85%, var(--bg-grad-end) 100%);
+    /* Glass / UI */
+    --glass-alpha: 0.12;
+    --glass-strong-alpha: 0.20;
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-strong: rgba(255,255,255,0.08);
+    /* Sizes */
+    --navbar-height: 64px;
+    --navbar-vertical-padding: 14px;
+    --navbar-horizontal-padding: 22px;
+    --avatar-size: 36px;
+    --sidebar-width: 240px;
+    --sidebar-collapsed-width: 72px;
+    --container-gap: 32px;
+    /* Geometry & shadows */
+    --radius: 10px;
+    --card-shadow: 0 8px 30px rgba(2,6,23,0.28);
+    --content-shadow: 0 6px 24px rgba(2,6,23,0.32);
+    /* Typography */
+    --base-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --base-font-size: 14px;
+    --heading-color: var(--brand-color);
+}
+
+/* ---------------- Reset / Base ---------------- */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+    font-family: var(--base-font);
+    font-size: var(--base-font-size);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--white);
+    background: var(--bg-gradient);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Images & utility */
+img {
+    max-width: 100%;
+    display: block;
+    height: auto;
+}
+
+/* Accessibility focus ring used globally */
+:focus {
+    outline: none;
+}
+
+a:focus, button:focus, input:focus, .nav-link:focus {
+    outline: 3px solid rgba(212,175,55,0.14);
+    outline-offset: 2px;
+}
+
+/* Common button focus shadow (keeps previous behaviour) */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* ---------------- Layout primitives ---------------- */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--navbar-vertical-padding) var(--navbar-horizontal-padding);
+    background: rgba(255,255,255,var(--glass-alpha));
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 2px 12px rgba(2,6,23,0.12);
+    height: var(--navbar-height);
+}
+
+/* Branding */
+.brand {
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 1.15rem;
+    color: var(--white);
+    user-select: none;
+}
+
+/* Generic shell for pages with sidebar + content */
+.shell {
+    display: flex;
+    gap: 22px;
+    width: 100%;
+    margin-top: var(--navbar-height);
+    align-items: flex-start;
+    flex: 1 0 auto;
+    padding: 18px;
+}
+
+/* Sidebar common */
+.sidebar {
+    width: var(--sidebar-width);
+    min-width: 180px;
+    padding: 18px;
+    background: rgba(0,0,0,var(--glass-strong-alpha));
+    border-right: 1px solid rgba(255,255,255,0.04);
+    border-radius: calc(var(--radius) / 1.1);
+    box-shadow: var(--card-shadow);
+    height: calc(100vh - var(--navbar-height));
+    position: sticky;
+    top: var(--navbar-height);
+    overflow-y: auto;
+    transition: width 240ms ease, opacity 240ms ease, transform 240ms ease;
+}
+
+    /* Collapsed helper */
+    .sidebar.collapsed {
+        width: var(--sidebar-collapsed-width);
+        min-width: var(--sidebar-collapsed-width);
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+/* Sidebar utilities */
+.sidebar-title {
+    color: var(--white);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+    .sidebar-nav .nav-link {
+        color: rgba(255,255,255,0.92);
+        padding: 8px 10px;
+        border-radius: 8px;
+        display: block;
+        transition: transform .15s ease, background .12s ease;
+        text-decoration: none;
+    }
+
+        .sidebar-nav .nav-link:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .sidebar-nav .nav-link.active, .sidebar-nav .nav-link:active {
+            background: linear-gradient(90deg, rgba(212,175,55,0.12), rgba(212,175,55,0.06));
+            color: var(--brand-color);
+            font-weight: 600;
+            box-shadow: 0 6px 18px rgba(212,175,55,0.06);
+        }
+
+/* Content area */
+.content {
+    flex: 1 1 auto;
+    min-height: calc(100vh - var(--navbar-height) - 60px);
+    width: calc(100% - var(--sidebar-width));
+    overflow-x: auto;
+    padding: 20px;
+}
+
+.content-inner {
+    background: rgba(255,255,255,0.03);
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: var(--content-shadow);
+}
+
+/* Footer */
+.footer {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(255,255,255,0.01));
+    border-top: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.9);
+}
+
+/* Generic card & widget */
+.card {
+    background: transparent;
+    border: none;
+    color: inherit;
+}
+
+.widget-card {
+    background: rgba(255,255,255,0.02);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: var(--card-shadow);
+}
+
+/* Buttons */
+.btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--white);
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+
+/* Links */
+.link-underline {
+    color: var(--text-light);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Simple helpers */
+.hidden-xs {
+    display: none;
+}
+
+@media (min-width: 420px) {
+    .hidden-xs {
+        display: inline-block;
+    }
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 991.98px) {
+    .shell {
+        flex-direction: column;
+        margin-top: var(--navbar-height);
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        border-radius: 8px;
+    }
+
+    .content {
+        width: 100%;
+        padding: 18px;
+    }
+
+    .sidebar.collapsed {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 13px;
+    }
+
+    .navbar {
+        padding: 10px 12px;
+    }
+
+    .content-inner {
+        padding: 12px;
+    }
+}
+
+/* ---------------- Utilities that avoid Bootstrap conflicts ---------------- */
+/* Use sparingly — only where Bootstrap commonly overrides glass styles */
+.dropdown-menu {
+    z-index: 1150 !important;
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(8px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    box-shadow: 0 8px 28px rgba(2,6,23,0.48) !important;
+    color: #fff !important;
+    min-width: 200px;
+    padding: 6px 0 !important;
+}
+
+.dropdown-item {
+    color: #fff !important;
+}
+
+    .dropdown-item:hover {
+        background: rgba(255,255,255,0.03) !important;
+    }
+
+/* ---------------- Layout helpers for login pages (isolated) ---------------- */
+.login-root {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: calc(var(--navbar-height) + var(--container-gap));
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+/* new stuf */
+
+
+/* ---------------- Compatibility: Visitor / legacy navbar helpers ----------------
+   Add this at the end of Site.css (or in Visitor.css loaded after Site.css)
+   to make .navbar-custom and .nav-links behave as the shared .navbar/.nav
+   without changing your existing Razor markup.
+*/
+
+/* Ensure a navbar height variable exists */
+:root {
+    --navbar-height: 64px; /* adjust if your navbar is shorter (e.g. 56px) */
+}
+
+/* Make the legacy class match the shared navbar styles */
+.navbar-custom,
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1200; /* ensure above other elements */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--navbar-vertical-padding, 14px) var(--navbar-horizontal-padding, 22px);
+    background: rgba(255,255,255,var(--glass-alpha,0.12));
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 2px 12px rgba(2,6,23,0.12);
+    height: var(--navbar-height);
+    box-sizing: border-box;
+}
+
+    /* Brand */
+    .navbar-custom .brand,
+    .navbar .brand {
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: 1.15rem;
+        color: var(--white);
+        text-decoration: none;
+    }
+
+/* Make .nav-links behave like a nav container */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+    /* Make partial-generated nav items align (bootstrap may render <li><a class="nav-link">) */
+    .nav-links > li,
+    .nav-links > .nav-item {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+    }
+
+    /* If your partial emits anchor links use this */
+    .nav-links .nav-link {
+        color: rgba(255,255,255,0.92);
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 8px;
+    }
+
+/* Small-screen hide for username if present */
+.navbar-custom .username,
+.navbar .username {
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Ensure dropdowns and Bootstrap's menu appear above hero content */
+.navbar-custom .dropdown-menu,
+.navbar .dropdown-menu {
+    z-index: 1300 !important;
+}
+
+/* Give the page top padding so fixed navbar doesn't overlap content.
+   Prefer this instead of setting margin-top on each shell — safe for most pages. */
+main, .main {
+    padding-top: calc(var(--navbar-height) + 10px); /* small buffer; tune as needed */
+}
+
+/* If your login partial renders .avatar or .login-btn styles, keep them usable */
+.navbar-custom .avatar,
+.navbar .avatar {
+    width: var(--avatar-size,36px);
+    height: var(--avatar-size,36px);
+    border-radius: 999px;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+/* Small responsive tweaks that mirror previous Visitor.css behavior */
+@media (max-width:420px) {
+    .navbar-custom .username,
+    .navbar .username {
+        display: none;
+    }
+
+    main, .main {
+        padding-top: calc(var(--navbar-height) + 6px);
+    }
+}
+
+/* Optional: if you want the navbar to look slightly glassier on admin pages,
+   the body.admin variables already set in Admin.css will cascade. */
+
+/* Ensure nav-links acts as a nav container and doesn't inherit conflicting rules */
+.nav-links {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+    /* li container should behave inline-flex so children align */
+    .nav-links > li,
+    .nav-links > .nav-item {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+    }
+
+    /* anchors inside nav use nav-link (Bootstrap may add padding) — make them glassy and compact */
+    .nav-links .nav-link,
+    .nav-links a.login-btn,
+    .nav-links a.register-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 10px;
+        text-decoration: none;
+        cursor: pointer;
+        color: rgba(255,255,255,0.92);
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+        /* subtle hover/active states */
+        .nav-links .nav-link:hover,
+        .nav-links a.login-btn:hover,
+        .nav-links a.register-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.98;
+            background: rgba(255,255,255,0.05);
+        }
+
+    /* avatar (img) - consistent sizing & spacing */
+    .nav-links .avatar,
+    .navbar .avatar,
+    .navbar-custom .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        object-fit: cover;
+        border: 1px solid rgba(255,255,255,0.06);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        display: inline-block;
+    }
+
+    /* username: truncated, hidden on very small screens */
+    .nav-links .username,
+    .navbar .username {
+        max-width: 120px;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+        color: var(--white);
+        vertical-align: middle;
+    }
+
+/* hide username on tiny screens to save space (matches old behavior) */
+@media (max-width: 420px) {
+    .nav-links .username,
+    .navbar .username {
+        display: none;
+    }
+}
+
+/* Dropdown: glass + elevated. Bootstrap sometimes resets background — reinforce here */
+.nav-links .dropdown-menu,
+.navbar .dropdown-menu,
+.navbar-custom .dropdown-menu {
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(8px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    box-shadow: 0 8px 28px rgba(2,6,23,0.48) !important;
+    color: #fff !important;
+    min-width: 200px;
+    padding: 6px 0 !important;
+    z-index: 1400 !important; /* ensure dropdown sits above hero/content */
+}
+
+/* dropdown items readable */
+.nav-links .dropdown-item,
+.navbar .dropdown-item {
+    color: #fff !important;
+}
+
+/* dropdown header and divider */
+.nav-links .dropdown-header,
+.navbar .dropdown-header {
+    color: rgba(255,255,255,0.8) !important;
+}
+
+.nav-links .dropdown-divider,
+.navbar .dropdown-divider {
+    border-top-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Login/Register buttons (when not dropdown) — match previous glass styling */
+.login-btn,
+.register-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    line-height: 1;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+    -webkit-tap-highlight-color: transparent;
+    color: #fff;
+    background: rgba(255,255,255,0.04);
+}
+
+/* primary login button variant (if you want it stronger, uncomment or adapt) */
+.login-btn {
+    /* keep subtle gradient if desired — remove if you prefer neutral */
+    background: linear-gradient(180deg, rgba(42,127,98,1), rgba(38,110,85,1));
+    border: 1px solid rgba(0,0,0,0.12);
+    box-shadow: 0 6px 18px rgba(2,6,23,0.28);
+}
+
+/* register lighter */
+.register-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+    /* focus states (accessible) */
+    .login-btn:focus,
+    .register-btn:focus,
+    .nav-links .nav-link:focus,
+    .nav-links .dropdown-item:focus {
+        outline: 2px solid rgba(255,255,255,0.14);
+        outline-offset: 2px;
+    }
+
+/* If Bootstrap's .nav-link adds display:block and large padding, keep our compact look by targeting .nav-links > .nav-item .nav-link */
+.nav-links > .nav-item .nav-link {
+    padding: 6px 10px; /* override bootstrap defaults for compact header items */
+}
+
+/* Edge case: if some earlier rule set .nav-link { color: inherit; } and hides white text, force white here */
+.nav-links .nav-link,
+.nav-links a {
+    color: rgba(255,255,255,0.92);
+}
+
+
+
+/* ------------------------------------------------------------------
+  Compatibility & layout fixes for legacy markup:
+  - makes .navbar-custom/.nav-links behave like the shared navbar
+  - ensures fixed navbar does not overlap content
+  - ensures footer is visible and sticks to bottom when content is short
+ ------------------------------------------------------------------*/
+
+/* ensure navbar height variable exists */
+:root {
+    --navbar-height: 64px;
+}
+
+/* Legacy navbar class -> adopt shared navbar look */
+.navbar-custom,
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--navbar-vertical-padding, 14px) var(--navbar-horizontal-padding, 22px);
+    background: rgba(255,255,255,var(--glass-alpha,0.12));
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 2px 12px rgba(2,6,23,0.12);
+    height: var(--navbar-height);
+    box-sizing: border-box;
+}
+
+    /* Brand */
+    .navbar-custom .brand,
+    .navbar .brand {
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: 1.15rem;
+        color: var(--white);
+    }
+
+/* nav-links container */
+.nav-links {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+    /* keep nav items inline and compact */
+    .nav-links > li, .nav-links > .nav-item {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .nav-links .nav-link {
+        padding: 6px 10px;
+        border-radius: 10px;
+        color: rgba(255,255,255,0.92);
+        text-decoration: none;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* avatar + username */
+    .nav-links .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        object-fit: cover;
+        border: 1px solid rgba(255,255,255,0.06);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    .nav-links .username {
+        max-width: 120px;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+        color: var(--white);
+        vertical-align: middle;
+    }
+
+/* hide username on tiny screens */
+@media (max-width:420px) {
+    .nav-links .username {
+        display: none;
+    }
+}
+
+/* dropdown styling */
+.nav-links .dropdown-menu, .navbar .dropdown-menu, .navbar-custom .dropdown-menu {
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(8px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    box-shadow: 0 8px 28px rgba(2,6,23,0.48) !important;
+    color: #fff !important;
+    min-width: 200px;
+    padding: 6px 0 !important;
+    z-index: 1400 !important;
+}
+
+/* layout: let main take remaining space so footer shows */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Allow main to grow and push footer down */
+main, .main {
+    flex: 1 1 auto;
+    padding-top: calc(var(--navbar-height) + 6px); /* prevents overlap with fixed navbar */
+    box-sizing: border-box;
+}
+
+/* Ensure native footer element looks like .footer used earlier */
+footer {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(255,255,255,0.01));
+    border-top: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.9);
+    margin-top: auto;
+}
+
+    /* if some rule hides footer (display:none) — override that here (safe to remove later) */
+    footer[style*="display:none"], footer[hidden] {
+        display: block !important;
+        visibility: visible !important;
+    }
+
+/* small screens adjust padding */
+@media (max-width: 575.98px) {
+    main, .main {
+        padding-top: calc(var(--navbar-height) + 4px);
+    }
+
+    .navbar-custom, .navbar {
+        padding: 10px 12px;
+    }
+}
+/* ---------------- Home hero: glass morphism + theme polishing ----------------
+   Paste at end of Site.css or in Home.css loaded after Site.css
+-------------------------------------------------------------------------------*/
+
+.hero {
+    width: 100%;
+    padding: 40px 18px;
+    box-sizing: border-box;
+    color: var(--white);
+}
+
+/* container that constrains width and creates the two-column layout */
+.hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+    align-items: start;
+}
+
+/* desktop split */
+@media (min-width: 992px) {
+    .hero-inner {
+        grid-template-columns: 1fr 420px;
+        gap: 28px;
+    }
+}
+
+/* make the main column a glass panel so hero feels part of UI */
+.hero-main {
+    background: rgba(255,255,255,0.03); /* subtle glass tint */
+    border: 1px solid rgba(255,255,255,0.04); /* faint border */
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 12px 36px rgba(2,6,23,0.36);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* heading styles */
+.title {
+    margin: 0 0 6px 0;
+    font-size: clamp(1.8rem, 3.6vw, 3rem);
+    line-height: 1.02;
+    color: var(--white);
+}
+
+.brand-accent {
+    /* gold gradient clipped to text */
+    background: linear-gradient(90deg, var(--brand-color), var(--brand-color-2));
+    -webkit-background-clip: text; /* required on WebKit/Blink */
+    background-clip: text; /* some browsers support the unprefixed form */
+    -webkit-text-fill-color: transparent; /* makes the text show the background */
+    /* fallback for older browsers that don't support background-clip:text */
+    color: var(--brand-color);
+    font-weight: 700;
+}
+
+
+/* subtitle and lead text */
+.subtitle {
+    margin: 0 0 8px;
+    color: var(--text-light);
+    font-size: 1.05rem;
+}
+
+.hero-lead {
+    margin: 0 0 18px;
+    color: rgba(255,255,255,0.92);
+}
+
+/* actions — make sure Bootstrap doesn't override hero styles */
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+/* Primary CTA - gold gradient, strong readable text */
+.hero .btn.btn-primary.hero-cta,
+.hero .btn-primary.hero-cta {
+    background: linear-gradient(90deg, var(--brand-color), var(--brand-color-2)) !important;
+    color: #111 !important;
+    border: none !important;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    box-shadow: 0 8px 20px rgba(212,175,55,0.12);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+/* Ghost / secondary CTA — glass look */
+.hero .btn.btn-ghost.hero-secondary,
+.hero .btn-ghost.hero-secondary {
+    background: rgba(255,255,255,0.04) !important;
+    color: var(--white) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    padding: 8px 12px;
+    border-radius: 10px;
+}
+
+/* Hover effects */
+.hero .btn:hover {
+    transform: translateY(-3px);
+}
+
+/* Feature list */
+.hero-features {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+    display: grid;
+    gap: 8px;
+    color: rgba(255,255,255,0.92);
+    font-size: .98rem;
+}
+
+/* Side column: keep glass feeling and consistent padding */
+.hero-side {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* preview-card — stronger glass look for small widgets */
+.preview-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 10px 30px rgba(2,6,23,0.32);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* preview headings */
+.preview-title {
+    margin: 0 0 10px 0;
+    color: var(--brand-color);
+    font-weight: 600;
+}
+
+/* preview rows */
+.preview-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: rgba(255,255,255,0.92);
+}
+
+.preview-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* dot colors (reuse if present elsewhere) */
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+    .dot.present {
+        background: #2ecc71;
+    }
+
+    .dot.absent {
+        background: #e74c3c;
+    }
+
+    .dot.leave {
+        background: #f39c12;
+    }
+
+/* reuse existing glass-box utility but strengthen for hero */
+.hero .glass-box {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 8px 26px rgba(2,6,23,0.34);
+    backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* small helper classes */
+.mt-16 {
+    margin-top: 16px;
+}
+
+.p-16 {
+    padding: 16px;
+}
+
+/* Responsive: tighten spacing on small screens */
+@media (max-width: 575.98px) {
+    .hero {
+        padding: 18px 10px;
+    }
+
+    .hero-inner {
+        gap: 14px;
+    }
+
+    .hero-main {
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    .preview-card {
+        padding: 12px;
+    }
+
+    .title {
+        font-size: 1.6rem;
+    }
+
+    .hero-actions {
+        justify-content: flex-start;
+    }
+}
+
+/* ---------------- Prevent Bootstrap overrides for hero specifically --------------*/
+/* Use more specific selectors to avoid global Bootstrap .btn rules clobbering intent */
+.hero .btn-primary {
+    font-weight: 700;
+}
+
+.hero .btn-ghost {
+    border-radius: 10px;
+}
+
+/* ensure hero text contrast is maintained if a role file changes variables */
+.hero, .hero * {
+    color: inherit;
+}
+
+/* Reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .hero .btn, .hero .glass-box, .hero .preview-card {
+        transition: none !important;
+        transform: none !important;
+    }
+}
+

@@ -1,0 +1,48 @@
+﻿@{
+    var userPrincipal = HttpContextAccessor.HttpContext?.User;
+}
+
+@if (SignInManager.IsSignedIn(userPrincipal))
+{
+    var currentUser = await UserManager.GetUserAsync(userPrincipal);
+    var roles = await UserManager.GetRolesAsync(currentUser);
+    var profilePicture = string.IsNullOrEmpty(currentUser?.ProfilePic)
+        ? Url.Content("~/images/default-avatar-40.png")
+        : currentUser.ProfilePic;
+    var username = await UserManager.GetUserNameAsync(currentUser) ?? "User";
+    <li class="nav-item dropdown" role="none">
+        <a class="nav-link d-flex align-items-center dropdown-toggle"
+           href="#"
+           id="userDropdown"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false"
+           aria-haspopup="true">
+            <img src="@profilePicture"
+                 alt="Profile"
+                 class="rounded-circle avatar"
+                 width="36" height="36" />
+            <span class="username d-none d-sm-inline text-truncate">@username</span>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" role="menu">
+            <li class="dropdown-header small text-muted px-3">@((roles?.Any() == true) ? string.Join(", ", roles) : "User")</li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Profile</a></li>
+            <li>
+                <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="m-0">
+                    <button type="submit" class="dropdown-item text-danger">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <li class="nav-item" role="none">
+        <a class="login-btn" asp-area="" asp-controller="Auth" asp-action="Login" role="menuitem">Login</a>
+    </li>
+    <li class="nav-item" role="none">
+        <a class="register-btn" asp-area="" asp-controller="Auth" asp-action="Register" role="menuitem">Register</a>
+    </li>
+}

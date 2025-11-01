@@ -1,0 +1,19 @@
+﻿@model QrPageVM
+@{
+    ViewData["Title"] = Model.Mode == "out" ? "Check Out" : "Check In";
+}
+
+<div class="container py-4 text-center">
+    <h2>@(Model.Mode == "out" ? "Check Out" : "Check In")</h2>
+    <p>Scan the QR code below with your phone camera to complete the action.</p>
+
+    <div class="my-3">
+        <img src="@Url.Action("QrImage", "CompanyDesk", new { companyId = Model.CompanyId, qrId = Model.QrId, mode = Model.Mode })"
+             alt="QR code" />
+             
+    </div>
+
+    <div class="mt-3">
+        <a class="btn btn-secondary" asp-action="Index">Back</a>
+    </div>
+</div>

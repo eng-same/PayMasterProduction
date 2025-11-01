@@ -1,0 +1,327 @@
+/* Site.css — common styles, variables, resets
+   Load this first on every page. Role-specific files override variables and rules below.
+*/
+
+/* ---------------- Variables ---------------- */
+:root {
+    /* Colors */
+    --brand-color: #d4af37;
+    --brand-color-2: #c79f2e;
+    --text-light: #f0e6b8;
+    --white: #fff;
+    /* Background gradient */
+    --bg-grad-start: #2c3e50;
+    --bg-grad-mid-1: #34495e;
+    --bg-grad-mid-2: #5a6d5a;
+    --bg-grad-mid-3: #8b9b6b;
+    --bg-grad-end: #b8b577;
+    --bg-gradient: linear-gradient(180deg, var(--bg-grad-start) 0%, var(--bg-grad-mid-1) 40%, var(--bg-grad-mid-2) 70%, var(--bg-grad-mid-3) 85%, var(--bg-grad-end) 100%);
+    /* Glass / UI */
+    --glass-alpha: 0.12;
+    --glass-strong-alpha: 0.20;
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-strong: rgba(255,255,255,0.08);
+    /* Sizes */
+    --navbar-height: 64px;
+    --navbar-vertical-padding: 14px;
+    --navbar-horizontal-padding: 22px;
+    --avatar-size: 36px;
+    --sidebar-width: 240px;
+    --sidebar-collapsed-width: 72px;
+    --container-gap: 32px;
+    /* Geometry & shadows */
+    --radius: 10px;
+    --card-shadow: 0 8px 30px rgba(2,6,23,0.28);
+    --content-shadow: 0 6px 24px rgba(2,6,23,0.32);
+    /* Typography */
+    --base-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --base-font-size: 14px;
+    --heading-color: var(--brand-color);
+}
+
+/* ---------------- Reset / Base ---------------- */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+    font-family: var(--base-font);
+    font-size: var(--base-font-size);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--white);
+    background: var(--bg-gradient);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Images & utility */
+img {
+    max-width: 100%;
+    display: block;
+    height: auto;
+}
+
+/* Accessibility focus ring used globally */
+:focus {
+    outline: none;
+}
+
+a:focus, button:focus, input:focus, .nav-link:focus {
+    outline: 3px solid rgba(212,175,55,0.14);
+    outline-offset: 2px;
+}
+
+/* Common button focus shadow (keeps previous behaviour) */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* ---------------- Layout primitives ---------------- */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--navbar-vertical-padding) var(--navbar-horizontal-padding);
+    background: rgba(255,255,255,var(--glass-alpha));
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 2px 12px rgba(2,6,23,0.12);
+    height: var(--navbar-height);
+}
+
+/* Branding */
+.brand {
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 1.15rem;
+    color: var(--white);
+    user-select: none;
+}
+
+/* Generic shell for pages with sidebar + content */
+.shell {
+    display: flex;
+    gap: 22px;
+    width: 100%;
+    margin-top: var(--navbar-height);
+    align-items: flex-start;
+    flex: 1 0 auto;
+    padding: 18px;
+}
+
+/* Sidebar common */
+.sidebar {
+    width: var(--sidebar-width);
+    min-width: 180px;
+    padding: 18px;
+    background: rgba(0,0,0,var(--glass-strong-alpha));
+    border-right: 1px solid rgba(255,255,255,0.04);
+    border-radius: calc(var(--radius) / 1.1);
+    box-shadow: var(--card-shadow);
+    height: calc(100vh - var(--navbar-height));
+    position: sticky;
+    top: var(--navbar-height);
+    overflow-y: auto;
+    transition: width 240ms ease, opacity 240ms ease, transform 240ms ease;
+}
+
+    /* Collapsed helper */
+    .sidebar.collapsed {
+        width: var(--sidebar-collapsed-width);
+        min-width: var(--sidebar-collapsed-width);
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+/* Sidebar utilities */
+.sidebar-title {
+    color: var(--white);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+    .sidebar-nav .nav-link {
+        color: rgba(255,255,255,0.92);
+        padding: 8px 10px;
+        border-radius: 8px;
+        display: block;
+        transition: transform .15s ease, background .12s ease;
+        text-decoration: none;
+    }
+
+        .sidebar-nav .nav-link:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .sidebar-nav .nav-link.active, .sidebar-nav .nav-link:active {
+            background: linear-gradient(90deg, rgba(212,175,55,0.12), rgba(212,175,55,0.06));
+            color: var(--brand-color);
+            font-weight: 600;
+            box-shadow: 0 6px 18px rgba(212,175,55,0.06);
+        }
+
+/* Content area */
+.content {
+    flex: 1 1 auto;
+    min-height: calc(100vh - var(--navbar-height) - 60px);
+    width: calc(100% - var(--sidebar-width));
+    overflow-x: auto;
+    padding: 20px;
+}
+
+.content-inner {
+    background: rgba(255,255,255,0.03);
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: var(--content-shadow);
+}
+
+/* Footer */
+.footer {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(255,255,255,0.01));
+    border-top: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.9);
+}
+
+/* Generic card & widget */
+.card {
+    background: transparent;
+    border: none;
+    color: inherit;
+}
+
+.widget-card {
+    background: rgba(255,255,255,0.02);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: var(--card-shadow);
+}
+
+/* Buttons */
+.btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--white);
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+
+/* Links */
+.link-underline {
+    color: var(--text-light);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Simple helpers */
+.hidden-xs {
+    display: none;
+}
+
+@media (min-width: 420px) {
+    .hidden-xs {
+        display: inline-block;
+    }
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 991.98px) {
+    .shell {
+        flex-direction: column;
+        margin-top: var(--navbar-height);
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        border-radius: 8px;
+    }
+
+    .content {
+        width: 100%;
+        padding: 18px;
+    }
+
+    .sidebar.collapsed {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 13px;
+    }
+
+    .navbar {
+        padding: 10px 12px;
+    }
+
+    .content-inner {
+        padding: 12px;
+    }
+}
+
+/* ---------------- Utilities that avoid Bootstrap conflicts ---------------- */
+/* Use sparingly — only where Bootstrap commonly overrides glass styles */
+.dropdown-menu {
+    z-index: 1150 !important;
+    background: rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(8px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    box-shadow: 0 8px 28px rgba(2,6,23,0.48) !important;
+    color: #fff !important;
+    min-width: 200px;
+    padding: 6px 0 !important;
+}
+
+.dropdown-item {
+    color: #fff !important;
+}
+
+    .dropdown-item:hover {
+        background: rgba(255,255,255,0.03) !important;
+    }
+
+/* ---------------- Layout helpers for login pages (isolated) ---------------- */
+.login-root {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: calc(var(--navbar-height) + var(--container-gap));
+    box-sizing: border-box;
+    overflow: auto;
+}

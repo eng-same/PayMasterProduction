@@ -1,0 +1,58 @@
+﻿@model DashboardVM
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+
+<div class="container-fluid py-4">
+    <h2 class="mb-3">Admin Dashboard</h2>
+
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Total Companies</h6>
+                    <h3>@Model.TotalCompanies</h3>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-6 col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Total Employees</h6>
+                    <h3>@Model.TotalEmployees</h3>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-6 col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Active Employees</h6>
+                    <h3>@Model.TotalActiveEmployees</h3>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-6 col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Outstanding Invoices</h6>
+                    <h3>@Model.TotalOutstandingAmount.ToString("C")</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Invoices: Invoiced vs Paid (last @Model.MonthlyPoints.Count months)</h5>

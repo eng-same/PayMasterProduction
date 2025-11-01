@@ -1,0 +1,85 @@
+﻿@* Views/Shared/_SupervisorLayout.cshtml *@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PayMaster Supervisor</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Supervisor.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container-fluid nav-inner d-flex align-items-center">
+                <div class="d-flex align-items-center">
+                    <!-- Sidebar toggle -->
+                    <button id="sidebarToggle" class="btn btn-ghost me-2" aria-expanded="true" aria-controls="supervisorSidebar" title="Toggle menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="brand">PayMaster</div>
+                </div>
+
+                <div class="nav-actions d-flex align-items-center">
+                    <div class="me-3 d-none d-md-block">
+                        <span class="small text-muted">Supervisor Portal</span>
+                    </div>
+                    <partial name="_LoginStatus" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="shell">
+        <div class="supervisor-shell d-flex">
+            <!-- Sidebar -->
+            <aside id="supervisorSidebar" class="sidebar" role="navigation" aria-label="Supervisor menu">
+                <partial name="_SupervisorSidebar" />
+            </aside>
+@* 
+            <!-- Main content -->
+            <main class="content flex-grow-1">
+                <div class="container-fluid content-inner py-3">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <partial name="_CompanyStats" />
+                        </div>
+                        <div class="col-md-6">
+                            <partial name="_EmployeeManagement" />
+                        </div>
+                        <div class="col-md-6">
+                            <partial name="_AttendanceSummary" />
+                        </div>
+                        <div class="col-12">
+                            <partial name="_Reports" />
+                        </div>
+                    </div>
+                </div>
+            </main> *@
+    <main>
+        @RenderBody()
+    </main>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid text-center text-muted small py-3">
+            &copy; 2025 - PayMasterMVP
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/supervisor-layout.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

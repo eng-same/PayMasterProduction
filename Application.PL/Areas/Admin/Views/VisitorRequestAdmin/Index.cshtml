@@ -1,0 +1,46 @@
+@model IEnumerable<Application.DAL.Models.VisitorRequest>
+@{
+    ViewData["Title"] = "Visitor Requests";
+}
+<h1>@ViewData["Title"]</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Submitted</th>
+            <th>Company</th>
+            <th>Contact</th>
+            <th>Email</th>
+            <th>Employees</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var r in Model)
+{
+    <tr>
+        <td>@r.SubmittedAt.ToLocalTime()</td>
+        <td>@r.CompanyName</td>
+        <td>@r.ContactName</td>
+        <td>@r.Email</td>
+        <td>@r.NumberOfEmployees</td>
+        <td>@r.Status</td>
+        <td>
+            <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Details", new { id = r.Id })">Details</a>
+            @if (r.Status == "Pending")
+            {
+                <form method="post" asp-action="Approve" asp-route-id="@r.Id" style="display:inline">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-sm btn-success" type="submit">Approve</button>
+                </form>
+                <form method="post" asp-action="Reject" asp-route-id="@r.Id" style="display:inline; margin-left:6px">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-sm btn-danger" type="submit">Reject</button>
+                </form>
+            }
+        </td>
+    </tr>
+}
+    </tbody>
+</table>
