@@ -39,6 +39,9 @@ namespace Application.DAL.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsExcused")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -883,7 +886,7 @@ namespace Application.DAL.Migrations
             modelBuilder.Entity("Application.DAL.Models.OverTime", b =>
                 {
                     b.HasOne("Application.DAL.Models.Employee", "Employee")
-                        .WithMany()
+                        .WithMany("OverTimes")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -984,6 +987,8 @@ namespace Application.DAL.Migrations
                     b.Navigation("Attendances");
 
                     b.Navigation("LeaveRequests");
+
+                    b.Navigation("OverTimes");
 
                     b.Navigation("PayrollDeductions");
 

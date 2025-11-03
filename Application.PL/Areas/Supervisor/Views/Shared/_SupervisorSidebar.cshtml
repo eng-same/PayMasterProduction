@@ -3,28 +3,58 @@
     <h5 class="sidebar-brand mb-4">Supervisor Menu</h5>
     <ul class="nav flex-column sidebar-nav">
         <li class="nav-item mb-2">
-            <a class="nav-link active" asp-area="Supervisor" asp-controller="Home" asp-action="Dashboard">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-area="Supervisor" asp-controller="Home" asp-action="Index">
                 <i class="bi bi-speedometer2 me-2"></i>
                 <span class="link-text">Dashboard</span>
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a class="nav-link" asp-area="Supervisor" asp-controller="Employee" asp-action="Index">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Company" ? "active" : "")" asp-area="Supervisor" asp-controller="Company" asp-action="Dashboard">
+                <i class="bi bi-building me-2"></i>
+                <span class="link-text">Company</span>
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Employee" ? "active" : "")" asp-area="Supervisor" asp-controller="Employee" asp-action="Index">
                 <i class="bi bi-people me-2"></i>
                 <span class="link-text">Employees</span>
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a class="nav-link" asp-area="Supervisor" asp-controller="Reports" asp-action="Index">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "JobManagement" ? "active" : "")" asp-area="Supervisor" asp-controller="JobManagement" asp-action="JobsIndex">
+                <i class="bi bi-briefcase me-2"></i>
+                <span class="link-text">Jobs</span>
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-area="Supervisor" asp-controller="Reports" asp-action="Index">
                 <i class="bi bi-file-earmark-bar-graph me-2"></i>
                 <span class="link-text">Reports</span>
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a class="nav-link" asp-area="Supervisor" asp-controller="Payroll" asp-action="Index">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payroll" ? "active" : "")" asp-area="Supervisor" asp-controller="Payroll" asp-action="Index">
                 <i class="bi bi-currency-dollar me-2"></i>
                 <span class="link-text">Payroll</span>
             </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "LeaveReview" ? "active" : "")" asp-area="Supervisor" asp-controller="LeaveReview" asp-action="Index">
+                <i class="bi bi-clock-history me-2"></i>
+                <span class="link-text">Leave Requests</span>
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "CompanyDesk" ? "active" : "")" asp-area="CompanyDesk" asp-controller="CompanyDesk" asp-action="Index">
+                <i class="bi bi-qr-code me-2"></i>
+                <span class="link-text">Company Desk</span>
+            </a>
+        </li>
+        <li class="nav-item mt-3">
+            <form method="post" asp-area="Supervisor" asp-controller="Reports" asp-action="ExportPdf">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-secondary w-100"><i class="bi bi-download me-2"></i>Export Reports (PDF)</button>
+            </form>
         </li>
     </ul>
 </div>

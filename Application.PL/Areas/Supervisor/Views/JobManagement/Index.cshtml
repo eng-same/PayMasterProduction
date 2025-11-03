@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Job>
+@{
+    ViewData["Title"] = "Jobs";
+}
+
+<h2>Jobs</h2>
+
+<p>
+    <a asp-action="CreateJob" class="btn btn-primary">Create Job</a>
+</p>
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Salary</th>
+            <th>Status</th>
+            <th>Standard Start</th>
+            <th>Standard End</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var job in Model)
+        {
+            <tr>
+                <td>@job.Title</td>
+                <td>@job.Salary.ToString("C")</td>
+                <td>@job.Status</td>
+                <td>@(job.StandardStartTime?.ToString() ?? "-")</td>
+                <td>@(job.StandardEndTime?.ToString() ?? "-")</td>
+                <td>
+                    <a asp-action="EditJob" asp-route-id="@job.Id" class="btn btn-sm btn-secondary">Edit</a>
+                    <form asp-action="DeleteJob" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@job.Id" />
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete job? This will unassign job from employees.')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

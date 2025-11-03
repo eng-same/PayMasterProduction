@@ -13,16 +13,14 @@
     <header>
         <nav class="navbar-custom">
             <div class="brand">PayMaster</div>
-            <ul>
-
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-page="/Visitor/Request">Request Site</a>
-            </li>
-
-            </ul>
-
+            
+                <div class="nav-links">
+                    <a asp-action="Index" asp-controller="Visitor" class="nav-link">Home</a>
+                <a asp-action="About" asp-controller="Visitor" class="nav-link">About</a>
+                <a asp-action="Contact" asp-controller="Visitor" class="nav-link">Contact</a>
+                </div>
             <!-- use the same class name your CSS expects -->
-            <ul class="nav-links navbar-nav">
+            <ul class="nav-links">
                 <partial name="_LoginStatus" />
             </ul>
         </nav>

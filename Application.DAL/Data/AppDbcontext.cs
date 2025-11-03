@@ -205,9 +205,10 @@ namespace Application.DAL.Data
                 b.Property(o => o.Date).IsRequired();
 
                 b.HasOne(o => o.Employee)
-                 .WithMany()
-                 .HasForeignKey(o => o.EmployeeId)
-                 .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(e => e.OverTimes)
+                .HasForeignKey(o => o.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
             });
 
             // -----------------------

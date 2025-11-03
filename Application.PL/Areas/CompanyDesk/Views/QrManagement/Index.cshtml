@@ -1,0 +1,52 @@
+@model IEnumerable<Application.DAL.Models.CompanyQRCode>
+@{
+    ViewData["Title"] = "QR Management";
+}
+
+<div class="container py-4">
+    <h2>QR Management</h2>
+    <p>Manage company QR codes: active/expired, regenerate, deactivate.</p>
+
+    <form method="post" asp-action="ForceRegenerate" class="mb-3">
+        <div class="input-group w-25">
+            <input type="number" name="minutes" value="10" class="form-control" min="1" />
+            <button class="btn btn-primary" type="submit">Force Regenerate</button>
+        </div>
+        @Html.AntiForgeryToken()
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Token</th>
+                <th>Generated</th>
+                <th>Expiry</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var q in Model)
+            {
+                <tr>
+                    <td>@q.Id</td>
+                    <td>@q.QRCodeToken</td>
+                    <td>@q.GeneratedAt.ToLocalTime().ToString("g")</td>
+                    <td>@q.ExpiryDate.ToLocalTime().ToString("g")</td>
+                    <td>@(q.IsActive ? "Yes" : "No")</td>
+                    <td>
+                        @if(q.IsActive)
+                        {
+                            <form method="post" asp-action="Deactivate" class="d-inline">
+                                <input type="hidden" name="id" value="@q.Id" />
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-sm btn-danger" type="submit">Deactivate</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -85,8 +85,8 @@ namespace Application.PL.Controllers
 
                 await _signInManager.SignInAsync(newUser, isPersistent: model.RememberMe);
 
-                // redirect based on role
-                return RedirectToRoleHome(employeeRole);
+                // redirect based on role(s)
+                return RedirectToRoleHome(new[] { employeeRole });
             }
 
             foreach (var error in result.Errors)
@@ -124,20 +124,15 @@ namespace Application.PL.Controllers
 
             if (result.Succeeded)
             {
+                // retrieve roles for the user
                 var roles = await _userManager.GetRolesAsync(user);
-                var role = roles.FirstOrDefault();
 
-                // FIX: Retrieve Employee entity for the user to get CompanyId
-                // This assumes you have a way to get Employee by user.Id, e.g. via a service or db context.
-                //Example using a service (replace with your actual implementation):
+                // Attach companyId claim for employees if available
                 var employee = await _employeeService.GetByUserIdAsync(user.Id);
                 if (employee != null)
                     await _userManager.AddClaimAsync(user, new Claim("companyId", employee.CompanyId.ToString()));
 
-                // For now, comment out the problematic line to avoid CS0120
-                // await _userManager.AddClaimAsync(user, new Claim("companyId", Employee.CompanyId.ToString()));
-
-                return RedirectToRoleHome(role);
+                return RedirectToRoleHome(roles);
             }
 
             ModelState.AddModelError("", "Invalid login attempt.");
@@ -151,24 +146,26 @@ namespace Application.PL.Controllers
             return RedirectToAction("Index", "Visitor");
         }
 
-        // Helper method for clean redirection by role
-        private IActionResult RedirectToRoleHome(string role)
+        // Helper method for clean redirection by role (prefers Admin -> Supervisor -> Employee)
+        private IActionResult RedirectToRoleHome(IEnumerable<string> roles)
         {
-            if (string.IsNullOrEmpty(role))
-                return RedirectToAction("Index", "Home");
+            if (roles == null || !roles.Any())
+                return RedirectToAction("Index", "Home", new { area = "" });
 
-            role = role.ToLower();
+            var lowered = roles.Select(r => r?.Trim().ToLowerInvariant()).Where(r => !string.IsNullOrEmpty(r)).ToList();
 
-            if (role == "admin")
-                return RedirectToAction("Index", "Home", new { Area = "Admin" });
+            if (lowered.Contains("admin"))
+                return RedirectToAction("Index", "Home", new { area = "Admin" });
 
-            if (role == "supervisor")
-                return RedirectToAction("Dashboard", "Home", new { Area = "Supervisor" });
+            if (lowered.Contains("supervisor"))
+                // Supervisor home is Home/Index
+                return RedirectToAction("Dashboard", "Company", new { area = "Supervisor" });
 
-            if (role == "employee")
-                return RedirectToAction("Index", "Home", new { Area = "Employee" });
+            if (lowered.Contains("employee"))
+                return RedirectToAction("Index", "Home", new { area = "Employee" });
 
-            return RedirectToAction("Index", "Home");
+            // fallback
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
     }
 

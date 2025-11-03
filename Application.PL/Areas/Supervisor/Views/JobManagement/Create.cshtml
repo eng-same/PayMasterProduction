@@ -1,0 +1,72 @@
+﻿@model Job
+@{
+    ViewData["Title"] = "Create Job";
+}
+<h2>Create Job</h2>
+
+@if (TempData["AlertSuccess"] != null)
+{
+    <div class="alert alert-success">@TempData["AlertSuccess"]</div>
+}
+
+<form asp-action="CreateJob" method="post">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    <div class="mb-2">
+        <label asp-for="Title" class="form-label">Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Description" class="form-label">Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-2">
+            <label asp-for="Salary" class="form-label">Salary</label>
+            <input asp-for="Salary" class="form-control" />
+            <span asp-validation-for="Salary" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-2">
+            <label asp-for="Status" class="form-label">Status</label>
+            <input asp-for="Status" class="form-control" />
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-2">
+            <label asp-for="StandardDurationMinutes" class="form-label">Duration (min)</label>
+            <input asp-for="StandardDurationMinutes" class="form-control" />
+            <span asp-validation-for="StandardDurationMinutes" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-2">
+            <label asp-for="StandardStartTime" class="form-label">Standard Start</label>
+            <input asp-for="StandardStartTime" class="form-control" />
+            <span asp-validation-for="StandardStartTime" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-2">
+            <label asp-for="StandardEndTime" class="form-label">Standard End</label>
+            <input asp-for="StandardEndTime" class="form-control" />
+            <span asp-validation-for="StandardEndTime" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-2">
+            <label asp-for="AllowedDailyMinutes" class="form-label">Allowed Daily Minutes</label>
+            <input asp-for="AllowedDailyMinutes" class="form-control" />
+            <span asp-validation-for="AllowedDailyMinutes" class="text-danger"></span>
+        </div>
+    </div>
+
+    <input asp-for="CompanyId" type="hidden" />
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="JobsIndex" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,68 @@
+﻿@model ProfileEditVM
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Edit Profile";
+}
+
+<div class="container mt-4">
+    <h3>Edit Profile</h3>
+
+    @if (TempData["ProfileSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["ProfileSuccess"]</div>
+    }
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" novalidate>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <label>Current Picture</label><br />
+                <img src="@(string.IsNullOrEmpty(Model.ProfilePic) ? "https://placehold.co/140x140" : Model.ProfilePic)"
+                     class="rounded-circle mb-2" width="140" height="140" />
+            </div>
+
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ProfileImageFile" class="form-label">Upload new profile picture</label>
+                    <input asp-for="ProfileImageFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.gif" />
+                    <small class="form-text text-muted">Allowed: .jpg, .jpeg, .png, .gif</small>
+                    <span asp-validation-for="ProfileImageFile" class="text-danger"></span>
+                </div>
+
+                <div class="mt-3">
+                    <button class="btn btn-primary" type="submit">Save</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

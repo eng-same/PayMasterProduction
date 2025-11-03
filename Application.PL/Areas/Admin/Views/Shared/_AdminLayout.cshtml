@@ -14,7 +14,7 @@
     <!-- Fixed glass navbar -->
     <nav class="navbar">
         <div class="container-fluid nav-inner">
-            <a class="brand" asp-area="Admin" asp-action="Dashboard" asp-controller="Admin">Splendore Admin</a>
+            <a class="brand" asp-area="Admin" asp-action="Index" asp-controller="Home">Splendore Admin</a>
 
             <div class="right-controls d-flex align-items-center">
                 <div class="d-none d-md-block me-3">
@@ -33,21 +33,21 @@
             <h5 class="sidebar-title">Admin Menu</h5>
             <ul class="nav flex-column sidebar-nav">
                 <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")"
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
                        asp-area="Admin"
-                       asp-action="Dashboard"
-                       asp-controller="Admin">
+                       asp-action="Index"
+                       asp-controller="Home">
                         Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-area="Admin" asp-action="Index" asp-controller="Product">Finance</a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "VisitorRequestAdmin" ? "active" : "")" asp-area="Admin" asp-action="Index" asp-controller="VisitorRequestAdmin">Visitor Requests</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-area="Admin" asp-action="Index" asp-controller="Category">Users</a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "CompanyAdmin" ? "active" : "")" asp-area="Admin" asp-action="Index" asp-controller="CompanyAdmin">Companies</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-area="Admin" asp-action="Index" asp-controller="CompanyAdmin">Companies</a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" ? "active" : "")" asp-area="Admin" asp-action="Index" asp-controller="Users">Users</a>
                 </li>
             </ul>
         </aside>
@@ -58,6 +58,7 @@
                 @RenderBody()
             </div>
         </main>
+
     </div>
 
     <footer class="footer">

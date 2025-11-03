@@ -1,4 +1,5 @@
 ﻿@model DashboardVM
+@using System.Text.Json
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
@@ -56,3 +57,86 @@
             <div class="card">
                 <div class="card-body">
                     <h5>Invoices: Invoiced vs Paid (last @Model.MonthlyPoints.Count months)</h5>
+                    <canvas id="invoiceChart" height="140"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3"><div class="card-body">
+                <h6>Companies with Unpaid Invoices</h6>
+                <ul class="list-group">
+                    @if (Model.CompaniesWithUnpaidInvoices != null && Model.CompaniesWithUnpaidInvoices.Any())
+                    {
+                        foreach (var c in Model.CompaniesWithUnpaidInvoices)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@c.CompanyName</strong>
+                                    <div><small>@c.UnpaidInvoiceCount invoice(s)</small></div>
+                                </div>
+                                <div>
+                                    <span class="me-2">@c.UnpaidAmount.ToString("C")</span>
+                                    <a asp-area="Admin" asp-controller="CompanyAdmin" asp-action="Details" asp-route-id="@c.CompanyId" class="btn btn-sm btn-outline-primary">View</a>
+                                </div>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item">No unpaid invoices.</li>
+                    }
+                </ul>
+            </div></div>
+
+            <div class="card"><div class="card-body">
+                <h6>Employees with Most Deductions</h6>
+                <ul class="list-group">
+                    @if (Model.TopLateEmployees != null && Model.TopLateEmployees.Any())
+                    {
+                        foreach (var e in Model.TopLateEmployees)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@e.FullName</strong>
+                                    <div><small>@e.TotalMinutesDeducted minutes deducted</small></div>
+                                </div>
+                                <div>
+                                    <span class="me-2">@e.TotalAmountDeducted.ToString("C")</span>
+                                </div>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item">No deductions recorded.</li>
+                    }
+                </ul>
+            </div></div>
+        </div>
+    </div>
+
+    <!-- Optionally other admin sections could go here -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    (function () {
+        var labels = @Html.Raw(JsonSerializer.Serialize(Model.MonthlyPoints.Select(m => m.Label)));
+        var invoicedData = @Html.Raw(JsonSerializer.Serialize(Model.MonthlyPoints.Select(m => m.Invoiced)));
+        var paidData = @Html.Raw(JsonSerializer.Serialize(Model.MonthlyPoints.Select(m => m.Paid)));
+
+        var ctx = document.getElementById('invoiceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Invoiced', data: invoicedData, borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.1)', tension: 0.3 },
+                    { label: 'Paid', data: paidData, borderColor: '#28a745', backgroundColor: 'rgba(40,167,69,0.1)', tension: 0.3 }
+                ]
+            },
+            options: { responsive: true }
+        });
+    })();
+</script>

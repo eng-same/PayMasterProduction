@@ -1,0 +1,60 @@
+﻿@model AddExistingUserVM
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Add Existing User as Employee";
+}
+
+<div class="card">
+    <div class="card-body">
+        @if (Model.NotFound)
+        {
+            <h5>User not found</h5>
+            <p>No Identity user with email <strong>@Model.Email</strong> was found.</p>
+            <p><a asp-action="CreateJob" class="btn btn-sm btn-primary">Create a Job</a></p>
+            <p><a asp-controller="JobManagement" asp-action="CreateAndAddEmployee" asp-area="Supervisor" class="btn btn-sm btn-success">Create User & Add as Employee</a></p>
+        }
+        else if (!Model.HasRole)
+        {
+            <h5>User found but missing role</h5>
+            <p>User <strong>@Model.FirstName @Model.LastName</strong> (@Model.Email) exists but does <strong>not</strong> have the Identity role <code>Employee</code>.</p>
+            <p>Please assign the Identity role <em>Employee</em> in the admin console before adding them as a company employee.</p>
+            <p><a asp-controller="JobManagement" asp-action="CreateAndAddEmployee" asp-area="Supervisor" class="btn btn-sm btn-success">Create User & Add as Employee</a></p>
+        }
+        else if (Model.IsAlreadyEmployee)
+        {
+            <h5>Already an employee</h5>
+            <p>User <strong>@Model.FirstName @Model.LastName</strong> (@Model.Email) is already an employee of this company.</p>
+            <p><a asp-action="JobsIndex" asp-area="Supervisor" class="btn btn-sm btn-secondary">Back to Jobs</a></p>
+        }
+        else
+        {
+            <h5>Add <strong>@Model.FirstName @Model.LastName</strong> (@Model.Email) as Employee</h5>
+
+            <form asp-action="AddExistingUserAsEmployee" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="userId" value="@Model.UserId" />
+                <input type="hidden" name="companyId" value="@Model.CompanyId" />
+
+                <div class="mb-2">
+                    <label class="form-label">Position (optional)</label>
+                    <input name="position" class="form-control" />
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Assign Job (optional)</label>
+                    <select name="jobId" class="form-select">
+                        <option value="">-- No job --</option>
+                        @foreach (var j in Model.Jobs)
+                        {
+                            <option value="@j.Value">@j.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <button class="btn btn-primary">Add as Employee</button>
+                <a asp-action="JobsIndex" class="btn btn-secondary">Cancel</a>
+            </form>
+        }
+    </div>
+</div>

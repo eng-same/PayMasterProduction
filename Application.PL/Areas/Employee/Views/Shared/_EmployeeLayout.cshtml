@@ -40,28 +40,12 @@
 
         <main class="content">
             <div class="container-fluid content-inner">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <partial name="_AttendanceCalendar" />
-                    </div>
-
-                    <div class="col-md-6">
-                        <partial name="_PayrollList" />
-                    </div>
-
-                    <div class="col-md-6">
-                        <partial name="_Deductions" />
-                    </div>
-
-                    <div class="col-12">
-                        <partial name="_EmployeeActions" />
-                    </div>
-                </div>
+                @RenderBody()
             </div>
         </main>
     </div>
     <footer class="footer">
-    @RenderBody()
+    
         <div class="container-fluid text-center text-muted small py-3">
             &copy; 2025 - PayMasterMVP
         </div>

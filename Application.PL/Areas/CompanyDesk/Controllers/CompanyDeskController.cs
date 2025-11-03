@@ -5,6 +5,7 @@ using Application.PL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Security.Claims;
 
 namespace Application.PL.Areas.CompanyDesk.Controllers
@@ -30,7 +31,7 @@ namespace Application.PL.Areas.CompanyDesk.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var companyId = GetCompanyIdFromClaims();
+            var companyId = await GetCompanyIdFromClaimsAsync();
             if (companyId == null) return Forbid();
 
             var company = await _db.Companies.AsNoTracking().FirstOrDefaultAsync(c => c.Id == companyId.Value);
@@ -48,7 +49,7 @@ namespace Application.PL.Areas.CompanyDesk.Controllers
 
         private async Task<IActionResult> QrPageForMode(string mode)
         {
-            var companyId = GetCompanyIdFromClaims();
+            var companyId = await GetCompanyIdFromClaimsAsync();
             if (companyId == null) return Forbid();
 
             // Ensure valid QR exists (creates one if missing/expired)
@@ -70,7 +71,7 @@ namespace Application.PL.Areas.CompanyDesk.Controllers
         [HttpGet]
         public async Task<IActionResult> QrImage(int companyId, int qrId = 0, string mode = "in", int pixelsPerModule = 6, int validMinutes = 10, bool forceRegenerate = false)
         {
-            var claimCompanyId = GetCompanyIdFromClaims();
+            var claimCompanyId = await GetCompanyIdFromClaimsAsync();
             if (claimCompanyId == null) return Forbid();
             if (claimCompanyId.Value != companyId) return Forbid();
 
@@ -137,12 +138,121 @@ namespace Application.PL.Areas.CompanyDesk.Controllers
             }
         }
 
-        private int? GetCompanyIdFromClaims()
+        private async Task<int?> GetCompanyIdFromClaimsAsync()
         {
+            // First attempt: companyId claim (typical for company users)
             var companyClaim = User.FindFirst("companyId")?.Value;
             if (int.TryParse(companyClaim, out var companyId))
                 return companyId;
+
+            // Fallback: check if the current user is a CompanySupervisor and return their company
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return null;
+
+            var supervisor = await _db.Set<CompanySupervisor>().AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId);
+            if (supervisor != null)
+                return supervisor.CompanyId;
+
+            // no company context found
             return null;
+        }
+
+        // New: return JSON status for the current active QR (id, expiry, timespan seconds left, image url)
+        [HttpGet]
+        public async Task<IActionResult> GetQrStatus()
+        {
+            var companyId = await GetCompanyIdFromClaimsAsync();
+            if (companyId == null) return Forbid();
+
+            var qr = await EnsureValidQrRecordAsync(companyId.Value, TimeSpan.FromMinutes(10));
+            if (qr == null) return StatusCode(500);
+
+            var now = DateTime.UtcNow;
+            var timeLeft = qr.ExpiryDate > now ? (qr.ExpiryDate - now).TotalSeconds : 0;
+
+            var scheme = Request.Scheme;
+            var host = Request.Host.ToUriComponent();
+            var pathBase = Request.PathBase.HasValue ? Request.PathBase.ToUriComponent().TrimEnd('/') : "";
+            var imageUrl = $"{scheme}://{host}{pathBase}/api/qr/{companyId}/{qr.Id}/image?mode=mock";
+
+            return Ok(new
+            {
+                qrId = qr.Id,
+                generatedAt = qr.GeneratedAt,
+                expiry = qr.ExpiryDate,
+                timeLeftSeconds = (int)Math.Max(0, timeLeft),
+                imageUrl
+            });
+        }
+
+        // New: force regenerate and return json
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForceRegenerateQr(int validMinutes = 10)
+        {
+            var companyId = await GetCompanyIdFromClaimsAsync();
+            if (companyId == null) return Forbid();
+
+            try
+            {
+                // deactivate previous and create
+                var qr = await EnsureValidQrRecordAsync(companyId.Value, TimeSpan.FromMinutes(validMinutes), force: true);
+                if (qr == null) return StatusCode(500);
+
+                var scheme = Request.Scheme;
+                var host = Request.Host.ToUriComponent();
+                var pathBase = Request.PathBase.HasValue ? Request.PathBase.ToUriComponent().TrimEnd('/') : "";
+
+                var imageUrl = $"{scheme}://{host}{pathBase}/api/qr/{companyId}/{qr.Id}/image?mode=mock";
+                return Ok(new { qrId = qr.Id, generatedAt = qr.GeneratedAt, expiry = qr.ExpiryDate, imageUrl });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ForceRegenerateQr failed");
+                return StatusCode(500, "error");
+            }
+        }
+
+        // New: deactivate a specific QR
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeactivateQr(int qrId)
+        {
+            var companyId = await GetCompanyIdFromClaimsAsync();
+            if (companyId == null) return Forbid();
+
+            var qr = await _db.CompanyQRCodes.FirstOrDefaultAsync(q => q.Id == qrId && q.CompanyId == companyId.Value);
+            if (qr == null) return NotFound();
+
+            qr.IsActive = false;
+            _db.CompanyQRCodes.Update(qr);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { success = true });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DebugCompanyContext()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+            var isSupervisorRole = User.IsInRole("Supervisor") || User.IsInRole("Admin");
+
+            CompanySupervisor sup = null;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                sup = await _db.CompanySupervisors.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId);
+            }
+
+            return Ok(new
+            {
+                userId,
+                isAuthenticated = User.Identity?.IsAuthenticated ?? false,
+                name = User.Identity?.Name,
+                isSupervisorRole,
+                claims,
+                companySupervisor = sup == null ? null : new { sup.Id, sup.UserId, sup.CompanyId }
+            });
         }
     }
 }

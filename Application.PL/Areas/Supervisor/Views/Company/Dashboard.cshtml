@@ -64,16 +64,35 @@
                 </ul>
             </div></div>
 
-            <div class="card"><div class="card-body">
-                <h6>Add Employee (existing user)</h6>
-                <form id="addExistingForm">
-                    @Html.AntiForgeryToken()
-                    <div class="mb-2"><input class="form-control" name="userEmail" placeholder="User email" required /></div>
-                    <div class="mb-2"><input class="form-control" name="position" placeholder="Position" /></div>
-                    <button type="submit" class="btn btn-sm btn-success">Add</button>
-                </form>
-                <small class="text-muted d-block mt-2">If user does not exist, use the admin console or create new user via the create endpoint.</small>
-            </div></div>
+            <div class="card">
+                <div class="card-body">
+                    <h6>Add Employee (existing user)</h6>
+
+                    <div class="mb-2">
+                        <div class="input-group">
+                            <input id="existingUserEmail" class="form-control" placeholder="User email" />
+                            <button id="viewAddBtn" class="btn btn-outline-primary">View & Add</button>
+                        </div>
+                    </div>
+
+                    <small class="text-muted d-block mt-2">If user does not exist, use the admin console or use "Create User & Add" link below.</small>
+                    <div class="mt-2">
+                        <a asp-action="CreateAndAddEmployee" asp-controller="JobManagement" asp-area="Supervisor" class="btn btn-sm btn-success">Create User & Add as Employee</a>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.getElementById('viewAddBtn').addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var email = document.getElementById('existingUserEmail').value;
+                    if (!email) { alert('Enter an email'); return; }
+
+                    // navigate to the review page
+                    var url = '@Url.Action("AddExistingUser", "JobManagement", new { area = "Supervisor" })' + '?email=' + encodeURIComponent(email);
+                    window.location.href = url;
+                });
+            </script>
         </div>
     </div>
 

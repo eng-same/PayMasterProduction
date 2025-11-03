@@ -1,0 +1,37 @@
+@model IEnumerable<Application.DAL.Models.LeaveRequest>
+@{
+    ViewData["Title"] = "Leave Requests";
+}
+
+<h2>Leave Requests</h2>
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Type</th>
+            <th>Period</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@(r.Employee != null ? r.Employee.FirstName + " " + r.Employee.LastName : "-" )</td>
+                <td>@r.LeaveType</td>
+                <td>@r.StartDate.ToString("yyyy-MM-dd") - @r.EndDate.ToString("yyyy-MM-dd")</td>
+                <td>@r.Reason</td>
+                <td>@r.Status</td>
+                <td>
+                    @if (r.Status == "Pending")
+                    {
+                        <a class="btn btn-sm btn-primary" asp-action="Review" asp-route-reqId="@r.Id" asp-route-qrId="0">Review</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

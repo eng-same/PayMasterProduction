@@ -1,5 +1,4 @@
-﻿
-@model CompanyDeskVM
+﻿@model CompanyDeskVM
 @{
     ViewData["Title"] = "Company Desk";
 }
@@ -9,6 +8,8 @@
 
     <div class="mt-4">
         <a class="btn btn-success btn-lg me-2" asp-action="CheckIn">Check In</a>
-        <a class="btn btn-danger btn-lg" asp-action="CheckOut">Check Out</a>
+        <a class="btn btn-danger btn-lg me-2" asp-action="CheckOut">Check Out</a>
+        <a class="btn btn-info btn-lg me-2" asp-controller="QrManagement" asp-action="Index">QR Management</a>
+        <a class="btn btn-warning btn-lg" asp-controller="Leave" asp-action="Create">Request Leave</a>
     </div>
 </div>

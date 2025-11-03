@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Review Leave Request";
+}
+
+@{
+    var lr = (Application.DAL.Models.LeaveRequest)ViewData["LeaveRequest"];
+    var qrId = (int)ViewData["QrId"];
+}
+
+<div class="container py-4">
+    <h2>Leave Request #@lr.Id</h2>
+    <p>Employee: @lr.Employee?.Email</p>
+    <p>Type: @lr.LeaveType</p>
+    <p>Reason: @lr.Reason</p>
+    <p>Status: @lr.Status</p>
+
+    <form method="post" asp-action="Approve">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="reqId" value="@lr.Id" />
+        <input type="hidden" name="qrId" value="@qrId" />
+        <button class="btn btn-success" type="submit">Approve</button>
+    </form>
+
+    <form method="post" asp-action="Reject" class="mt-2">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="reqId" value="@lr.Id" />
+        <input type="hidden" name="qrId" value="@qrId" />
+        <button class="btn btn-danger" type="submit">Reject</button>
+    </form>
+</div>

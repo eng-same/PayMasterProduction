@@ -15,5 +15,8 @@
         public int EmployeeId { get; set; }
         // Navigation property
         public Employee Employee { get; set; }
+
+        // If true, this attendance segment is excused (e.g. approved leave) and should be excluded from missed-minutes calculations
+        public bool IsExcused { get; set; } = false;
     }
 }

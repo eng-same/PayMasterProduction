@@ -1,0 +1,43 @@
+@model IEnumerable<Application.DAL.Models.Employee>
+@{
+    ViewData["Title"] = "Employees";
+}
+
+<h2>Employees</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create Employee</a>
+</p>
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Position</th>
+            <th>Job</th>
+            <th>Active</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td>@e.FirstName @e.LastName</td>
+                <td>@e.Email</td>
+                <td>@e.Position</td>
+                <td>@(e.JobId?.ToString() ?? "-")</td>
+                <td>@(e.IsActive ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@e.Id" class="btn btn-sm btn-secondary">Edit</a>
+                    <form asp-action="Delete" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@e.Id" />
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete employee?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

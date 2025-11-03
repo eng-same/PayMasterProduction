@@ -1,4 +1,6 @@
-﻿namespace Application.DAL.Models
+﻿using System.Configuration;
+
+namespace Application.DAL.Models
 {
     public class Employee
     {
@@ -28,5 +30,6 @@
         public ICollection<PayrollDeduction> PayrollDeductions { get; set; } = new List<PayrollDeduction>();
         public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
         public ICollection<Salary> Salaries { get; set; } = new List<Salary>();
+        public ICollection<OverTime> OverTimes { get; set; } = new List<OverTime>();
     }
 }

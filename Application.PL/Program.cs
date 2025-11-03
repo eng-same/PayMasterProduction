@@ -14,13 +14,14 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IdentitySeeder>();
+// register the new fake data seeder
+builder.Services.AddScoped<FakeDataSeeder>();
 builder.Services.AddScoped<EmployeeRepository>();
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<LeaveRequestRepository>();
 builder.Services.AddScoped<ReportRepository>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, AppClaimsPrincipalFactory>();
-
 
 // register LiveQrService as singleton
 // 3. Read HMAC key from configuration
@@ -36,7 +37,6 @@ builder.Services.AddSingleton(sp =>
     var cache = sp.GetRequiredService<IMemoryCache>();
     return new LiveQrService(hmacKey, cache);
 });
-
 
 builder.Services.AddScoped<QrCodeService>();
 
@@ -86,11 +86,14 @@ app.MapControllerRoute(
 // seed data
 using (var scope = app.Services.CreateScope())
 {
-    var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeder>();
+    var services = scope.ServiceProvider;
+    var seeder = services.GetRequiredService<IdentitySeeder>();
+    var fakeSeeder = services.GetRequiredService<FakeDataSeeder>();
 
     // Seed roles and admin user
     await seeder.SeedIdentityAsync(app);
-
+    // Seed domain fake data
+    await fakeSeeder.SeedAsync();
 }
 
 app.Run();

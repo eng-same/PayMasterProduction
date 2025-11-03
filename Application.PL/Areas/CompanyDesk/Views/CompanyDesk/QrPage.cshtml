@@ -7,13 +7,77 @@
     <h2>@(Model.Mode == "out" ? "Check Out" : "Check In")</h2>
     <p>Scan the QR code below with your phone camera to complete the action.</p>
 
-    <div class="my-3">
-        <img src="@Url.Action("QrImage", "CompanyDesk", new { companyId = Model.CompanyId, qrId = Model.QrId, mode = Model.Mode })"
+    <div class="my-3" id="qrContainer">
+        <img id="qrImage" src="@Url.Action("QrImage", "CompanyDesk", new { companyId = Model.CompanyId, qrId = Model.QrId, mode = Model.Mode })"
              alt="QR code" />
-             
+        <div id="qrMeta" class="mt-2 small text-muted"></div>
     </div>
 
     <div class="mt-3">
+        <button class="btn btn-outline-primary" id="btnRefresh">Refresh</button>
+        <button class="btn btn-outline-danger" id="btnRegenerate">Force Regenerate</button>
         <a class="btn btn-secondary" asp-action="Index">Back</a>
     </div>
+
+    <div class="mt-3" id="qrMessage" role="alert" style="display:none;"></div>
 </div>
+
+@section Scripts {
+    <script>
+        (function(){
+            const companyId = @Model.CompanyId;
+            const getStatusUrl = '@Url.Action("GetQrStatus", "CompanyDesk")';
+            const forceUrl = '@Url.Action("ForceRegenerateQr", "CompanyDesk")';
+            const deactivateUrl = '@Url.Action("DeactivateQr", "CompanyDesk")';
+
+            function showMessage(text, type="info"){
+                var el = document.getElementById('qrMessage');
+                el.style.display = 'block';
+                el.className = 'alert alert-' + (type === 'error' ? 'danger' : type);
+                el.innerText = text;
+            }
+
+            async function fetchStatus(){
+                try{
+                    const res = await fetch(getStatusUrl, { credentials: 'same-origin' });
+                    if(!res.ok) throw new Error('Status fetch failed');
+                    const json = await res.json();
+                    const expiry = new Date(json.expiry);
+                    const now = new Date();
+                    const msLeft = expiry - now;
+                    const secondsLeft = Math.max(0, Math.floor(msLeft/1000));
+                    const mins = Math.floor(secondsLeft/60);
+                    const secs = secondsLeft % 60;
+                    document.getElementById('qrImage').src = json.imageUrl;
+                    document.getElementById('qrMeta').innerText = `Expires: ${expiry.toLocaleString()} (in ${mins}m ${secs}s)`;
+                    if(secondsLeft <= 0) showMessage('QR expired. Please regenerate.', 'error');
+                }catch(e){
+                    console.error(e);
+                    showMessage('Unable to fetch QR status.', 'error');
+                }
+            }
+
+            document.getElementById('btnRefresh').addEventListener('click', function(){ fetchStatus(); });
+            document.getElementById('btnRegenerate').addEventListener('click', async function(){
+                if(!confirm('Force regenerate QR? Existing active tokens will be deactivated.')) return;
+                try{
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    const res = await fetch(forceUrl, { method: 'POST', headers: {'RequestVerificationToken': token }, credentials: 'same-origin' });
+                    if(!res.ok) throw new Error('regenerate failed');
+                    const json = await res.json();
+                    document.getElementById('qrImage').src = json.imageUrl + '&_=' + Date.now();
+                    document.getElementById('qrMeta').innerText = `Expires: ${new Date(json.expiry).toLocaleString()}`;
+                    showMessage('QR regenerated successfully.', 'success');
+                }catch(e){
+                    console.error(e);
+                    showMessage('Failed to regenerate QR.', 'error');
+                }
+            });
+
+            // initial fetch
+            fetchStatus();
+            // update every 10s
+            setInterval(fetchStatus, 10000);
+        })();
+    </script>
+}

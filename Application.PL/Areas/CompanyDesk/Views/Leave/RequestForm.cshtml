@@ -1,0 +1,30 @@
+@model Application.PL.Areas.CompanyDesk.Models.LeaveRequestCreateVm
+@{
+    ViewData["Title"] = "Submit Leave Request";
+}
+<div class="container py-4">
+    <h2>Submit Leave Request</h2>
+    <form method="post" asp-action="SubmitFromQr">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="CompanyId" />
+        <input type="hidden" asp-for="EmployeeId" />
+
+        <div class="mb-3">
+            <label class="form-label">Leave Type</label>
+            <input class="form-control" asp-for="LeaveType" />
+            <span asp-validation-for="LeaveType" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Reason</label>
+            <textarea class="form-control" asp-for="Reason"></textarea>
+            <span asp-validation-for="Reason" class="text-danger"></span>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

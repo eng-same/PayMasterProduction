@@ -325,3 +325,66 @@ a:focus, button:focus, input:focus, .nav-link:focus {
     box-sizing: border-box;
     overflow: auto;
 }
+/* ---------- Layout: ensure footer is always visible and main doesn't overlap ---------- */
+/* footer height variable (tweak if your footer is taller) */
+:root {
+    --footer-height: 64px; /* change if your footer needs different height */
+}
+
+/* make sure html/body cover full viewport (kept but safe to re-assert) */
+html, body {
+    height: 100%;
+}
+
+/* let body remain a column flex container (you already do this above) */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Make .shell fill available space between navbar and footer */
+.shell {
+    /* allow it to grow/shrink, and explicitly reserve space for navbar + footer */
+    flex: 1 1 auto;
+    min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
+    /* keep existing shell behaviour */
+    display: flex;
+    gap: 22px;
+    padding: 18px;
+    box-sizing: border-box;
+}
+
+/* Content should size naturally inside .shell — avoid forcing huge min-heights */
+.content {
+    flex: 1 1 auto;
+    min-height: 0; /* important when children use scrolling: allows proper flexbox behaviour */
+    width: calc(100% - var(--sidebar-width));
+    overflow-x: auto;
+    padding: 20px;
+}
+
+/* Ensure the inner content area scrolls if it's long without breaking footer */
+.content-inner {
+    max-height: 100%;
+    min-height: 0;
+    overflow: visible;
+}
+
+/* Sidebar: restrict its max height so it cannot extend under footer on tall content */
+.sidebar {
+    /* previously used: height: calc(100vh - var(--navbar-height)); */
+    max-height: calc(100vh - var(--navbar-height) - var(--footer-height));
+    /* keep sticky positioning so it follows the navbar */
+    position: sticky;
+    top: var(--navbar-height);
+    overflow-y: auto;
+}
+
+/* Footer: keep it visible and not overlapped */
+.footer {
+    height: var(--footer-height);
+    flex-shrink: 0;
+    margin-top: auto;
+    box-sizing: border-box;
+}

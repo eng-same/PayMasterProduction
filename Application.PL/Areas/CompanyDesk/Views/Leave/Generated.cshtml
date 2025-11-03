@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Leave Request QR Generated";
+}
+<div class="container py-4 text-center">
+    <h2>Leave Request QR</h2>
+    <p>Scan this QR with your phone or open the link below (must be signed-in as an employee).</p>
+    <p><a target="_blank" href="@ViewData["StartUrl"]">Open leave request link</a></p>
+    <div class="my-3">
+        <img src="@ViewData["QrImageUrl"]" alt="leave request qr" />
+    </div>
+</div>

@@ -2,29 +2,47 @@
     ViewData["Title"] = "Home Page";
 }
 
-@* <div class="content">
-    <h1 class="title">Welcome to PayMaster</h1>
-    <p class="subtitle">Seamless payments with style ✨</p>
-</div> *@
 <section class="hero" aria-labelledby="hero-title">
     <div class="hero-inner">
         <div class="hero-main">
             <h1 id="hero-title" class="title">Welcome to <span class="brand-accent">PayMaster</span></h1>
-            <p class="subtitle">A clean, responsive layout keeping your color theme and glassy navbar.</p>
+            <p class="subtitle">Your all‑in‑one Attendance & Payroll Management System</p>
 
-            <p class="hero-lead">
-                Secure payroll, clear reports, and fast workflows — built with a modern glass UI and golden accents.
-            </p>
+            <div class="hero-carousel fade‑slider mt‑8">
+                <div class="slide active">
+                    <img src="/images/slider‑attendance.jpg" alt="Track Attendance" class="w-100">
+                    <div class="slide-caption">
+                        <h5>Track Attendance</h5>
+                        <p>Monitor employee presence, leaves, and absences effortlessly.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="/images/slider‑salary.png" alt="Salary & Overtime Calculation" class="w-100">
+                    <div class="slide-caption">
+                        <h5>Calculate Salaries & Overtime</h5>
+                        <p>Automatic salary, overtime hours, and deduction computations.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="/images/slider‑reports.jpg" alt="Clear Reports & Insights" class="w-100">
+                    <div class="slide-caption">
+                        <h5>Generate Clear Reports</h5>
+                        <p>Visualize payroll data, attendance trends and insights at a glance.</p>
+                    </div>
+                </div>
+            </div>
 
             <div class="hero-actions" role="group" aria-label="Primary actions">
-                <a href="/signup" class="btn btn-primary hero-cta">Get started</a>
-                <a href="/learn-more" class="btn btn-ghost hero-secondary">Learn more</a>
+                <a asp-action="Request" asp-controller="Visitor" class="btn btn-primary hero-cta">Get started</a>
+                <a asp-action="About" asp-controller="Visitor" class="btn btn-ghost hero-secondary">Learn more</a>
             </div>
 
             <ul class="hero-features" aria-hidden="false">
                 <li><strong>Fast setup:</strong> onboarding in minutes</li>
-                <li><strong>Secure:</strong> role-based access for admin, employee, supervisor</li>
-                <li><strong>Responsive:</strong> desktop & mobile friendly</li>
+                <li><strong>Accurate Payroll:</strong> auto‑calculates salaries, overtime, and deductions</li>
+                <li><strong>Attendance Tracking:</strong> monitor employee presence, leaves, and absences</li>
+                <li><strong>Secure:</strong> role‑based access for admin, employees & supervisors</li>
+                <li><strong>Responsive:</strong> works beautifully on desktop & mobile</li>
             </ul>
         </div>
 
@@ -35,15 +53,65 @@
                     <div class="preview-row"><span class="dot present" aria-hidden="true"></span> Payroll ready</div>
                     <div class="preview-row"><span class="dot leave" aria-hidden="true"></span> Leave approvals</div>
                     <div class="preview-row"><span class="dot absent" aria-hidden="true"></span> Attendance tracking</div>
+                    <div class="preview-row"><span class="dot overtime" aria-hidden="true"></span> Overtime calculations</div>
                 </div>
             </div>
 
             <div class="mt-16 glass-box p-16">
-                <h5 style="margin-top:0">Left column content</h5>
-                <p class="small">Use this panel for a quick form, tips, or announcements.</p>
+                <h5 style="margin-top:0">Stay on top of payroll</h5>
+                <p class="small">Quickly manage attendance, view reports, and ensure accurate salary processing every month.</p>
             </div>
         </aside>
     </div>
 </section>
 
+<!-- Add supporting CSS/JS for fade‑slider -->
+<style>
+    .hero-carousel {
+        position: relative;
+        overflow: hidden;
+        height: 400px; /* fixed height for all slides */
+    }
 
+        .hero-carousel .slide {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; /* fill the fixed height */
+        }
+
+            .hero-carousel .slide.active {
+                opacity: 1;
+                position: relative;
+            }
+
+            .hero-carousel .slide img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* image fills the slide area without distortion */
+            }
+
+    .slide-caption {
+        position: absolute;
+        bottom: 20%;
+        left: 10%;
+        color: #fff;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.hero-carousel .slide');
+      let current = 0;
+      const total = slides.length;
+      setInterval(() => {
+        slides[current].classList.remove('active');
+        current = (current + 1) % total;
+        slides[current].classList.add('active');
+      }, 5000); // change every 5 seconds
+    });
+</script>

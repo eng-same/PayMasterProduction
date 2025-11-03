@@ -1,0 +1,33 @@
+@model Application.DAL.Models.Employee
+@{
+    ViewData["Title"] = "Create Employee";
+}
+
+<h2>Create Employee</h2>
+
+<form method="post" asp-action="Create">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label class="form-label">First name</label>
+        <input asp-for="FirstName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Last name</label>
+        <input asp-for="LastName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Position</label>
+        <input asp-for="Position" class="form-control" />
+    </div>
+    <div class="mb-3 form-check">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label class="form-check-label">Active</label>
+    </div>
+
+    <button class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

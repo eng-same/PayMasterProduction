@@ -775,6 +775,7 @@ footer {
     padding: 40px 18px;
     box-sizing: border-box;
     color: var(--white);
+    margin-bottom: 20px; /* ensure spacing before footer */
 }
 
 /* container that constrains width and creates the two-column layout */

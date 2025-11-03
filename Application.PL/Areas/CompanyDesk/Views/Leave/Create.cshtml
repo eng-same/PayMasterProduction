@@ -1,0 +1,41 @@
+@model Application.PL.Areas.CompanyDesk.Models.LeaveRequestCreateVm
+@{
+    ViewData["Title"] = "Request Leave";
+}
+
+<div class="container py-4">
+    <h2>Request Leave</h2>
+    <form method="post" asp-action="Create">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="CompanyId" />
+
+        <div class="mb-3">
+            <label class="form-label">Employee</label>
+            @if (Model.Employees != null && Model.Employees.Any())
+            {
+                <select class="form-select" asp-for="EmployeeId" asp-items="Model.Employees"></select>
+            }
+            else
+            {
+                <input class="form-control" asp-for="EmployeeId" readonly />
+            }
+            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Leave Type</label>
+            <input class="form-control" asp-for="LeaveType" />
+            <span asp-validation-for="LeaveType" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Reason</label>
+            <textarea class="form-control" asp-for="Reason"></textarea>
+            <span asp-validation-for="Reason" class="text-danger"></span>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

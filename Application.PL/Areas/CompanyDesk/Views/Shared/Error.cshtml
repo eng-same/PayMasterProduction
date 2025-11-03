@@ -1,15 +1,18 @@
-﻿@model ErrorVM
+﻿@model Application.PL.ViewModels.ErrorVM?
+@using System.Diagnostics
+@using Application.PL.ViewModels
 @{
     ViewData["Title"] = "Error";
+    var viewModel = Model ?? new ErrorVM { RequestId = Activity.Current?.Id ?? ViewContext.HttpContext.TraceIdentifier };
 }
 
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
 
-@if (Model.ShowRequestId)
+@if (viewModel.ShowRequestId)
 {
     <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        <strong>Request ID:</strong> <code>@(viewModel.RequestId ?? "(none)")</code>
     </p>
 }
 
@@ -20,6 +23,6 @@
 <p>
     <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
     It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
+    For local debugging, enable the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
     and restarting the app.
 </p>

@@ -1,0 +1,74 @@
+﻿@model UserEditVM
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<h2>Edit User</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="FirstName" class="form-label"></label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LastName" class="form-label"></label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3 form-check">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label"></label>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Profile Picture URL</label>
+        <input asp-for="ProfilePic" class="form-control" />
+    </div>
+
+    <h5>Roles</h5>
+    <div class="mb-3">
+        @foreach (var role in Model.AvailableRoles)
+        {
+            var isChecked = Model.AssignedRoles.Contains(role);
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="AssignedRoles" value="@role" class="form-check-input" @(isChecked ? "checked" : "") />
+                <label class="form-check-label">@role</label>
+            </div>
+        }
+    </div>
+
+    <h5>Employee link</h5>
+    <div class="mb-3">
+        <select asp-for="SelectedEmployeeId" class="form-select">
+            <option value="">-- Not linked --</option>
+            @foreach (var e in Model.EmployeeOptions)
+            {
+                <option value="@e.EmployeeId" selected="@(e.Selected ? "selected" : null)">@e.Label</option>
+            }
+        </select>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,63 @@
+﻿@model CreateEmployeeVM
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Create user & add as employee";
+}
+
+<div class="container py-4">
+    <h2>Create user & add as employee</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="CreateAndAddEmployee" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Email</label>
+                        <input name="Email" value="@Model.Request.Email" class="form-control" type="email" required />
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Password</label>
+                        <input name="Password" class="form-control" type="password" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">First name</label>
+                        <input name="FirstName" value="@Model.Request.FirstName" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Last name</label>
+                        <input name="LastName" value="@Model.Request.LastName" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Position</label>
+                    <input name="Position" value="@Model.Request.Position" class="form-control" />
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Assign Job (optional)</label>
+                    <select name="JobId" class="form-select">
+                        <option value="">-- No job --</option>
+                        @foreach (var j in Model.Jobs)
+                        {
+                            <option value="@j.Value">@j.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create & Add</button>
+                <a asp-action="JobsIndex" class="btn btn-secondary ms-2">Back</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -197,6 +197,25 @@ namespace Application.PL.Areas.CompanyDesk.Controllers
 
             if (!isCheckout)
             {
+                // Prevent multiple open check-ins: if there's already an open attendance, do not create another
+                var existingOpen = await _db.Attendances
+                    .Where(a => a.EmployeeId == employeeId && a.CheckOutTime == null)
+                    .OrderByDescending(a => a.CheckInTime)
+                    .FirstOrDefaultAsync();
+
+                if (existingOpen != null)
+                {
+                    return new QrResultVm
+                    {
+                        Success = false,
+                        Message = "You are already checked in. Please check out before checking in again.",
+                        EmployeeId = employeeId,
+                        CompanyId = companyId,
+                        AttendanceId = existingOpen.Id,
+                        IsCheckout = false
+                    };
+                }
+
                 var attendance = new Attendance
                 {
                     EmployeeId = employeeId,
@@ -241,23 +260,14 @@ namespace Application.PL.Areas.CompanyDesk.Controllers
                     };
                 }
 
-                var attendance = new Attendance
-                {
-                    EmployeeId = employeeId,
-                    CheckInTime = now,
-                    CheckOutTime = now,
-                    Source = "QRScan-Checkout-Fallback"
-                };
-                _db.Attendances.Add(attendance);
-                await _db.SaveChangesAsync();
-
+                // If no open session exists, do not create a fallback that looks like a valid attendance.
                 return new QrResultVm
                 {
-                    Success = true,
-                    Message = "Checked out (no open session found — created fallback record).",
+                    Success = false,
+                    Message = "No open check-in session found to check out from.",
                     EmployeeId = employeeId,
                     CompanyId = companyId,
-                    AttendanceId = attendance.Id,
+                    AttendanceId = null,
                     IsCheckout = true
                 };
             }

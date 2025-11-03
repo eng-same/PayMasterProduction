@@ -28,7 +28,7 @@
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" role="menu">
             <li class="dropdown-header small text-muted px-3">@((roles?.Any() == true) ? string.Join(", ", roles) : "User")</li>
             <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Profile</a></li>
+            <li><a class="dropdown-item" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a></li>
             <li>
                 <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="m-0">
                     <button type="submit" class="dropdown-item text-danger">Logout</button>

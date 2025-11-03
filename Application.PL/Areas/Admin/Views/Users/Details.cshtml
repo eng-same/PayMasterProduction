@@ -1,0 +1,72 @@
+﻿@model UserDetailsVM
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<h2>User Details</h2>
+
+<div class="row">
+    <div class="col-md-3 text-center">
+        <img src="@(string.IsNullOrEmpty(Model.User.ProfilePic) ? "https://placehold.co/140x140" : Model.User.ProfilePic)" class="rounded-circle img-fluid mb-2" />
+    </div>
+    <div class="col-md-9">
+        <dl class="row">
+            <dt class="col-sm-3">Full Name</dt>
+            <dd class="col-sm-9">@Model.User.FirstName @Model.User.LastName</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.User.Email</dd>
+
+            <dt class="col-sm-3">Username</dt>
+            <dd class="col-sm-9">@Model.User.UserName</dd>
+
+            <dt class="col-sm-3">Phone</dt>
+            <dd class="col-sm-9">@Model.User.PhoneNumber</dd>
+
+            <dt class="col-sm-3">Roles</dt>
+            <dd class="col-sm-9">
+                @if (Model.Roles.Any())
+                {
+                    foreach (var r in Model.Roles)
+                    {
+                        <span class="badge bg-primary me-1">@r</span>
+                    }
+                }
+                else
+                {
+
+                    <span class="badge bg-secondary">No Role</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Employee</dt>
+            <dd class="col-sm-9">
+                @if (Model.Employee != null)
+                {
+                    @($"{Model.Employee.FirstName} {Model.Employee.LastName} — {Model.Employee.Position}")
+                }
+                else
+                {
+
+                    <span class="text-muted">Not linked</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Company Supervisor</dt>
+            <dd class="col-sm-9">
+                @if (Model.CompanySupervisor != null)
+                {
+                    @(Model.CompanySupervisor.Company?.Name ?? Model.CompanySupervisor.CompanyId.ToString())
+                }
+                else
+                {
+
+                    <span class="text-muted">No</span>
+                }
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-secondary">Back</a>
+<a asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@Model.User.Id" class="btn btn-warning">Edit</a>

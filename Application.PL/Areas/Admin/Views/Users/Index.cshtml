@@ -1,0 +1,65 @@
+﻿@model IEnumerable<UserWithRolesVM>
+
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h2>Manage Users</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Profile</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Employee</th>
+            <th>Supervisor</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td><img src="@(string.IsNullOrEmpty(u.ProfilePic) ? "https://placehold.co/40x40" : u.ProfilePic)" class="rounded-circle" width="40" height="40" /></td>
+                <td>@u.FullName</td>
+                <td>@u.Email</td>
+                <td>
+                    @if (u.Roles.Any())
+                    {
+                        foreach (var r in u.Roles)
+                        {
+                            <span class="badge bg-primary me-1">@r</span>
+                        }
+                    }
+                    else
+                    {
+
+                        <span class="badge bg-secondary">No Role</span>
+                    }
+                </td>
+                <td>@(u.EmployeeName ?? "---")</td>
+                <td>@(u.IsCompanySupervisor ? "Yes" : "No")</td>
+                <td>@(u.IsActive ? "Yes" : "No")</td>
+                <td>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@u.Id" class="btn btn-sm btn-outline-info">Details</a>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@u.Id" class="btn btn-sm btn-outline-warning">Edit</a>
+                    <form asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@u.Id" method="post" class="d-inline" onsubmit="return confirm('Delete user?');">
+                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
